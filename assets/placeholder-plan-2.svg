@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2646" height="1701" viewBox="0 0 2646 1701" role="img" aria-label="图片占位符">
+  <rect width="2646" height="1701" fill="#F8FAFC"/>
+  <rect x="72" y="72" width="2502" height="1557" rx="48" fill="#FFFFFF" stroke="#D1FAE5" stroke-width="10"/>
+  <rect x="252" y="282" width="2142" height="300" rx="42" fill="#ECFDF5"/>
+  <circle cx="482" cy="432" r="76" fill="#10B981" opacity=".24"/>
+  <rect x="650" y="370" width="1260" height="60" rx="18" fill="#10B981" opacity=".18"/>
+  <rect x="650" y="476" width="900" height="52" rx="16" fill="#10B981" opacity=".12"/>
+  <rect x="252" y="760" width="2142" height="420" rx="42" fill="#FFFFFF" stroke="#D1FAE5" stroke-width="8" stroke-dasharray="34 26"/>
+  <text x="1323" y="992" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Noto Sans SC','Microsoft YaHei',Arial,sans-serif" font-size="92" font-weight="700" fill="#059669">图片占位符</text>
+  <text x="1323" y="1130" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Noto Sans SC','Microsoft YaHei',Arial,sans-serif" font-size="54" fill="#4B5563">月月陪跑计划</text>
+</svg>

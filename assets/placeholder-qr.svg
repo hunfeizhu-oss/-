@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="888" height="1131" viewBox="0 0 888 1131" role="img" aria-label="图片占位符">
+  <rect width="888" height="1131" fill="#ECFDF5"/>
+  <rect x="44" y="44" width="800" height="1043" rx="28" fill="#FFFFFF" stroke="#D1FAE5" stroke-width="4"/>
+  <path d="M280 390h328v328H280z" fill="#F8FAFC" stroke="#10B981" stroke-width="8" stroke-dasharray="18 16"/>
+  <path d="M332 448h78v78h-78zm146 0h78v78h-78zM332 590h78v78h-78zm146 0h78v78h-78z" fill="#10B981" opacity=".28"/>
+  <text x="444" y="790" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Noto Sans SC','Microsoft YaHei',Arial,sans-serif" font-size="38" font-weight="700" fill="#059669">图片占位符</text>
+  <text x="444" y="846" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Noto Sans SC','Microsoft YaHei',Arial,sans-serif" font-size="24" fill="#4B5563">二维码位置</text>
+</svg>

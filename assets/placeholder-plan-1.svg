@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2646" height="1701" viewBox="0 0 2646 1701" role="img" aria-label="图片占位符">
+  <rect width="2646" height="1701" fill="#F8FAFC"/>
+  <rect x="72" y="72" width="2502" height="1557" rx="48" fill="#FFFFFF" stroke="#D1FAE5" stroke-width="10"/>
+  <rect x="252" y="292" width="720" height="160" rx="24" fill="#10B981" opacity=".14"/>
+  <rect x="252" y="552" width="2142" height="80" rx="20" fill="#ECFDF5"/>
+  <rect x="252" y="720" width="1800" height="80" rx="20" fill="#ECFDF5"/>
+  <rect x="252" y="888" width="2010" height="80" rx="20" fill="#ECFDF5"/>
+  <rect x="252" y="1110" width="900" height="260" rx="36" fill="#ECFDF5" stroke="#10B981" stroke-width="8" stroke-dasharray="30 24"/>
+  <text x="1323" y="1248" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Noto Sans SC','Microsoft YaHei',Arial,sans-serif" font-size="92" font-weight="700" fill="#059669">图片占位符</text>
+  <text x="1323" y="1384" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Noto Sans SC','Microsoft YaHei',Arial,sans-serif" font-size="54" fill="#4B5563">首月陪跑计划</text>
+</svg>

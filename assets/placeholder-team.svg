@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="4216" height="4590" viewBox="0 0 4216 4590" role="img" aria-label="图片占位符">
+  <rect width="4216" height="4590" fill="#F0FFF8"/>
+  <rect x="160" y="160" width="3896" height="4270" rx="96" fill="#FFFFFF" stroke="#D1FAE5" stroke-width="18"/>
+  <circle cx="2108" cy="1880" r="430" fill="#10B981" opacity=".14"/>
+  <circle cx="1708" cy="2020" r="250" fill="#10B981" opacity=".22"/>
+  <circle cx="2508" cy="2020" r="250" fill="#10B981" opacity=".22"/>
+  <rect x="1188" y="2480" width="1840" height="520" rx="260" fill="#ECFDF5" stroke="#10B981" stroke-width="16" stroke-dasharray="48 36"/>
+  <text x="2108" y="3280" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Noto Sans SC','Microsoft YaHei',Arial,sans-serif" font-size="180" font-weight="700" fill="#059669">图片占位符</text>
+  <text x="2108" y="3540" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Noto Sans SC','Microsoft YaHei',Arial,sans-serif" font-size="108" fill="#4B5563">团队展示位置</text>
+</svg>
