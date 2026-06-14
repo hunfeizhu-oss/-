@@ -208,8 +208,23 @@ body {
 }
 .modal-content img {
   max-width: 100%;
-  max-height: 90vh;
+  max-height: calc(90vh - 72px);
   display: block;
+}
+.modal-confirm {
+  width: 100%;
+  border: none;
+  border-top: 1px solid var(--border);
+  background: var(--accio-orange);
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 16px 20px;
+  transition: background 0.2s;
+}
+.modal-confirm:hover {
+  background: #D96700;
 }
 .modal-close {
   position: absolute;
@@ -1526,6 +1541,7 @@ body {
   <div class="modal-content" onclick="event.stopPropagation()">
     <button class="modal-close" onclick="closeModal()">&times;</button>
     <img src="assets/contact-qr.jpg" alt="微信二维码">
+    <button class="modal-confirm" type="button" onclick="confirmWechatAdded()">我已识别并添加微信</button>
   </div>
 </div>
 
@@ -3279,26 +3295,56 @@ document.querySelectorAll('.sidebar-item').forEach(item => {
   });
 });
 
-document.querySelectorAll('.skill-download').forEach(link => {
+const WECHAT_UNLOCK_KEY = 'accioWorkWechatVerified';
+const WECHAT_GATE_MESSAGE = '请先点「添加微信了解」，并识别微信二维码添加后，方能下载成功。';
+let pendingDownloadLink = null;
+
+function hasWechatVerified() {
+  try {
+    return localStorage.getItem(WECHAT_UNLOCK_KEY) === 'true';
+  } catch (err) {
+    return false;
+  }
+}
+
+function saveWechatVerified() {
+  try {
+    localStorage.setItem(WECHAT_UNLOCK_KEY, 'true');
+  } catch (err) {
+    window.__wechatVerified = true;
+  }
+}
+
+async function downloadFileFromLink(link) {
+  const fileName = link.getAttribute('download') || link.getAttribute('href').split('/').pop();
+  const fileUrl = encodeURI(link.getAttribute('href'));
+  try {
+    const res = await fetch(fileUrl);
+    if (!res.ok) throw new Error('download failed');
+    const blob = await res.blob();
+    const objectUrl = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = objectUrl;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(objectUrl);
+  } catch (err) {
+    window.location.href = fileUrl;
+  }
+}
+
+document.querySelectorAll('.skill-download, .skill-bundle-link').forEach(link => {
   link.addEventListener('click', async function(e) {
     e.preventDefault();
-    const fileName = this.getAttribute('download') || this.getAttribute('href').split('/').pop();
-    const fileUrl = encodeURI(this.getAttribute('href'));
-    try {
-      const res = await fetch(fileUrl);
-      if (!res.ok) throw new Error('download failed');
-      const blob = await res.blob();
-      const objectUrl = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = objectUrl;
-      a.download = fileName;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(objectUrl);
-    } catch (err) {
-      window.location.href = fileUrl;
+    if (!hasWechatVerified() && !window.__wechatVerified) {
+      pendingDownloadLink = this;
+      alert(WECHAT_GATE_MESSAGE);
+      openModal();
+      return;
     }
+    await downloadFileFromLink(this);
   });
 });
 
@@ -3306,6 +3352,17 @@ document.querySelectorAll('.skill-download').forEach(link => {
 function openModal() {
   document.getElementById('imageModal').classList.add('active');
   document.body.style.overflow = 'hidden';
+}
+
+function confirmWechatAdded() {
+  saveWechatVerified();
+  window.__wechatVerified = true;
+  closeModal();
+  if (pendingDownloadLink) {
+    const link = pendingDownloadLink;
+    pendingDownloadLink = null;
+    downloadFileFromLink(link);
+  }
 }
 
 function closeModal(event) {
