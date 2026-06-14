@@ -427,6 +427,26 @@ body {
   color: var(--text-secondary);
   line-height: 1.8;
 }
+.team-showcase {
+  overflow: hidden;
+}
+.team-showcase figure {
+  margin: 0;
+}
+.team-showcase img {
+  width: 100%;
+  display: block;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+}
+.team-showcase figcaption {
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--text-muted);
+  text-align: center;
+}
 
 /* feature grid */
 .feature-grid {
@@ -1473,13 +1493,14 @@ body {
     <span class="nav-logo-text">Accio<span>Work</span></span>
   </a>
   <div class="nav-links">
-    <button class="nav-link active" onclick="showPanel(1)">功能介绍</button>
-    <button class="nav-link" onclick="showPanel(2)">Agent搭建</button>
-    <button class="nav-link" onclick="showPanel(3)">Skill使用</button>
-    <button class="nav-link" onclick="showPanel(4)">常用提示词</button>
-    <button class="nav-link" onclick="showPanel(5)">技能包</button>
-    <button class="nav-link" onclick="showPanel(6)">AI 跨境SOP 手册</button>
-    <button class="nav-link" onclick="showPanel(7)">OKKI</button>
+    <button class="nav-link active" data-panel="0" onclick="showPanel(0)">星芽网络</button>
+    <button class="nav-link" data-panel="1" onclick="showPanel(1)">功能介绍</button>
+    <button class="nav-link" data-panel="2" onclick="showPanel(2)">Agent搭建</button>
+    <button class="nav-link" data-panel="3" onclick="showPanel(3)">Skill使用</button>
+    <button class="nav-link" data-panel="4" onclick="showPanel(4)">常用提示词</button>
+    <button class="nav-link" data-panel="5" onclick="showPanel(5)">技能包</button>
+    <button class="nav-link" data-panel="6" onclick="showPanel(6)">AI 跨境SOP 手册</button>
+    <button class="nav-link" data-panel="7" onclick="showPanel(7)">OKKI</button>
   </div>
 </nav>
 
@@ -1511,31 +1532,35 @@ body {
 <!-- MODULE NAV -->
 <div class="module-nav">
   <div class="module-nav-grid">
-    <div class="module-nav-card active" onclick="showPanel(1)">
+    <div class="module-nav-card active" data-panel="0" onclick="showPanel(0)">
+      <div class="module-num">星芽</div>
+      <div class="module-nav-label">星芽网络</div>
+    </div>
+    <div class="module-nav-card" data-panel="1" onclick="showPanel(1)">
       <div class="module-num">01</div>
       <div class="module-nav-label">功能介绍</div>
     </div>
-    <div class="module-nav-card" onclick="showPanel(2)">
+    <div class="module-nav-card" data-panel="2" onclick="showPanel(2)">
       <div class="module-num">02</div>
       <div class="module-nav-label">Agent 搭建指南</div>
     </div>
-    <div class="module-nav-card" onclick="showPanel(3)">
+    <div class="module-nav-card" data-panel="3" onclick="showPanel(3)">
       <div class="module-num">03</div>
       <div class="module-nav-label">Skill 使用指南</div>
     </div>
-    <div class="module-nav-card" onclick="showPanel(4)">
+    <div class="module-nav-card" data-panel="4" onclick="showPanel(4)">
       <div class="module-num">04</div>
       <div class="module-nav-label">常用提示词</div>
     </div>
-    <div class="module-nav-card" onclick="showPanel(5)">
+    <div class="module-nav-card" data-panel="5" onclick="showPanel(5)">
       <div class="module-num">05</div>
       <div class="module-nav-label">国际站技能包</div>
     </div>
-    <div class="module-nav-card" onclick="showPanel(6)">
+    <div class="module-nav-card" data-panel="6" onclick="showPanel(6)">
       <div class="module-num">06</div>
       <div class="module-nav-label">AI 跨境SOP 手册</div>
     </div>
-    <div class="module-nav-card" onclick="showPanel(7)">
+    <div class="module-nav-card" data-panel="7" onclick="showPanel(7)">
       <div class="module-num">07</div>
       <div class="module-nav-label">OKKI</div>
     </div>
@@ -1547,7 +1572,11 @@ body {
 
   <!-- SIDEBAR -->
   <aside class="sidebar">
-    <div class="sidebar-section" id="sidebar-m1">
+    <div class="sidebar-section" id="sidebar-xinya">
+      <div class="sidebar-section-title">星芽网络</div>
+      <a class="sidebar-item active" href="#xinya-team">星芽服务团队展示</a>
+    </div>
+    <div class="sidebar-section" id="sidebar-m1" style="display:none">
       <div class="sidebar-section-title">模块 01 · 功能介绍</div>
       <a class="sidebar-item active" href="#m1-overview">平台概览</a>
       <a class="sidebar-item" href="#m1-features">核心能力</a>
@@ -1605,8 +1634,26 @@ body {
   <!-- CONTENT -->
   <div>
 
+    <!-- ── 星芽网络 ── -->
+    <div class="content-panel active" id="panel-0">
+      <div class="section-header">
+        <div class="section-icon">★</div>
+        <div class="section-title-block">
+          <h2>星芽网络</h2>
+          <p>星芽服务团队展示</p>
+        </div>
+      </div>
+
+      <div class="card team-showcase" id="xinya-team">
+        <figure>
+          <img src="assets/xinya-team.jpg" alt="星芽服务团队展示">
+          <figcaption>星芽服务团队展示</figcaption>
+        </figure>
+      </div>
+    </div>
+
     <!-- ── MODULE 1 ── -->
-    <div class="content-panel active" id="panel-1">
+    <div class="content-panel" id="panel-1">
       <div class="section-header">
         <div class="section-icon">🚀</div>
         <div class="section-title-block">
@@ -3067,9 +3114,9 @@ body {
 </div>
 
 <script>
-const panels = [1,2,3,4,5,6,7];
+const panels = [0,1,2,3,4,5,6,7];
 const sidebars = {
-  1:'sidebar-m1', 2:'sidebar-m2', 3:'sidebar-m3', 4:'sidebar-m4', 5:'sidebar-m5', 6:'sidebar-m6', 7:'sidebar-m7'
+  0:'sidebar-xinya', 1:'sidebar-m1', 2:'sidebar-m2', 3:'sidebar-m3', 4:'sidebar-m4', 5:'sidebar-m5', 6:'sidebar-m6', 7:'sidebar-m7'
 };
 
 function showPanel(n) {
@@ -3080,10 +3127,10 @@ function showPanel(n) {
     if (s) s.style.display = i === n ? '' : 'none';
   });
   document.querySelectorAll('.module-nav-card').forEach((c, i) => {
-    c.classList.toggle('active', i + 1 === n);
+    c.classList.toggle('active', Number(c.dataset.panel) === n);
   });
   document.querySelectorAll('.nav-link').forEach((l, i) => {
-    l.classList.toggle('active', i + 1 === n);
+    l.classList.toggle('active', Number(l.dataset.panel) === n);
   });
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
