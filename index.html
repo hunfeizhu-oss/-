@@ -1,108 +1,39 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Geobyke 折叠电助力车</title>
-  <link rel="stylesheet" href="styles.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AccioWork 使用手册</title>
+<style>
+:root{--bg:#f5f7f3;--ink:#0b1210;--muted:#66736d;--line:#dce4dc;--green:#00a86b;--green-2:#33d091;--mint:#e5f8ee;--yellow:#f7c948;--blue:#2f80ed;--card:#fff;--soft:#eef4ef;--shadow:0 18px 44px rgba(16,40,30,.10)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Arial,sans-serif;line-height:1.65}a{color:inherit}button,a.btn{border:0;text-decoration:none;cursor:pointer}.shell{max-width:1280px;margin:auto;padding:18px}.top{position:sticky;top:0;z-index:20;background:rgba(245,247,243,.9);backdrop-filter:blur(14px);border-bottom:1px solid rgba(11,18,16,.08)}.top-inner{max-width:1280px;margin:auto;padding:12px 18px;display:flex;align-items:center;justify-content:space-between;gap:16px}.brand{font-weight:900;font-size:20px;letter-spacing:.2px;display:flex;align-items:center;gap:10px}.mark{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--green),#07120f);box-shadow:0 10px 24px rgba(0,168,107,.28)}.nav{display:flex;gap:6px;overflow:auto}.nav a{white-space:nowrap;padding:8px 11px;border-radius:8px;color:#42504a;text-decoration:none;font-size:13px}.nav a:hover,.nav a.active{background:#07120f;color:#fff}.hero{min-height:88vh;display:grid;grid-template-columns:1.08fr .92fr;gap:28px;align-items:center;padding:34px 0 22px}.hero h1{font-size:56px;line-height:1.05;margin:0 0 18px;letter-spacing:0}.hero p{font-size:18px;color:var(--muted);max-width:680px;margin:0 0 24px}.hero-actions{display:flex;gap:12px;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:8px;padding:12px 16px;font-weight:800;font-size:14px;background:#0b1210;color:#fff}.btn.light{background:#fff;color:#0b1210;border:1px solid var(--line)}.stage{display:inline-flex;gap:8px;align-items:center;border:1px solid rgba(0,168,107,.28);background:var(--mint);color:#076b48;border-radius:999px;padding:7px 12px;font-size:13px;font-weight:800;margin-bottom:18px}.hero-panel{background:#0b1210;color:#fff;border-radius:8px;padding:22px;box-shadow:var(--shadow);min-height:440px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}.hero-panel:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 78% 20%,rgba(0,168,107,.45),transparent 32%),linear-gradient(145deg,rgba(255,255,255,.08),transparent 45%)}.hero-panel>*{position:relative}.metric-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.metric{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:16px}.metric b{display:block;font-size:30px;line-height:1}.metric span{display:block;color:#cbd8d1;font-size:13px;margin-top:8px}.flow{display:grid;gap:10px;margin-top:28px}.flow div{background:#fff;color:#0b1210;border-radius:8px;padding:13px 14px;font-weight:800}.hint{color:#bfd4ca;font-size:13px}.module-nav{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin:10px 0 34px}.module-nav a{background:#fff;border:1px solid var(--line);border-radius:8px;min-height:96px;padding:14px;text-decoration:none;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 12px 28px rgba(16,40,30,.06)}.module-nav strong{font-size:15px}.module-nav span{font-size:12px;color:var(--muted)}section.panel{background:#fff;border:1px solid var(--line);border-radius:8px;margin:18px 0;padding:24px;box-shadow:0 12px 30px rgba(16,40,30,.05)}.section-head{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:18px}.kicker{font-size:12px;font-weight:900;color:var(--green);text-transform:uppercase;letter-spacing:.9px}.section-head h2{font-size:30px;line-height:1.2;margin:4px 0 6px}.section-head p{margin:0;color:var(--muted)}.tag{display:inline-flex;padding:7px 10px;border-radius:999px;background:var(--soft);font-size:12px;font-weight:800;color:#43524b}.grid{display:grid;gap:14px}.grid.cols-2{grid-template-columns:repeat(2,1fr)}.grid.cols-3{grid-template-columns:repeat(3,1fr)}.grid.cols-4{grid-template-columns:repeat(4,1fr)}.card{border:1px solid var(--line);border-radius:8px;background:#fff;padding:16px}.card h3{margin:0 0 8px;font-size:18px}.card p{margin:0;color:var(--muted);font-size:14px}.step{display:grid;grid-template-columns:42px 1fr;gap:12px;align-items:flex-start}.num{width:36px;height:36px;border-radius:8px;background:#0b1210;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900}.callout{background:linear-gradient(135deg,#e8fbf1,#f7fff9);border:1px solid #bdebd4;border-radius:8px;padding:15px;color:#153b2b}.video-note{background:#111;color:#d8e6df;border-radius:8px;padding:20px;min-height:150px;display:flex;align-items:center;justify-content:center;text-align:center}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}.tab{border:1px solid var(--line);background:#fff;border-radius:8px;padding:9px 12px;font-weight:800;color:#48564f}.tab.active{background:#0b1210;color:#fff;border-color:#0b1210}.prompt-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.prompt-card{border:1px solid var(--line);border-radius:8px;padding:15px;background:#fff;display:none}.prompt-card.show{display:block}.prompt-card small{display:inline-block;color:#08744f;background:#e5f8ee;border-radius:999px;padding:3px 8px;font-weight:800}.prompt-card h3{font-size:16px;margin:9px 0 8px}.prompt-card p{font-size:13px;color:var(--muted);margin:0 0 12px}.copy{width:100%;border-radius:8px;background:#edf4ef;color:#0b1210;font-weight:900;padding:9px}.skill-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.skill-card{border:1px solid var(--line);border-radius:8px;padding:15px;background:#fff;display:flex;flex-direction:column;gap:10px}.skill-card h3{margin:0;font-size:17px}.skill-card p{margin:0;color:var(--muted);font-size:13px}.download{margin-top:auto;border-radius:8px;background:#0b1210;color:#fff;text-align:center;text-decoration:none;padding:10px 12px;font-weight:900}.table{width:100%;border-collapse:collapse;border:1px solid var(--line);border-radius:8px;overflow:hidden}.table th,.table td{border-bottom:1px solid var(--line);padding:11px 12px;text-align:left;font-size:14px;vertical-align:top}.table th{background:#f0f5f1}.table tr:last-child td{border-bottom:0}.okki-flow{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.okki{border:1px solid var(--line);border-radius:8px;padding:16px;background:linear-gradient(180deg,#fff,#f7fbf8)}.okki b{display:block;color:var(--green);margin-bottom:6px}.footer{padding:32px 0 48px;color:var(--muted);text-align:center}.search{width:100%;border:1px solid var(--line);border-radius:8px;padding:12px 14px;font-size:15px;margin-bottom:14px}.toast{position:fixed;right:18px;bottom:18px;background:#0b1210;color:#fff;border-radius:8px;padding:10px 14px;opacity:0;transform:translateY(10px);transition:.2s;z-index:30}.toast.show{opacity:1;transform:translateY(0)}@media(max-width:980px){.hero{grid-template-columns:1fr;min-height:auto}.hero h1{font-size:40px}.module-nav{grid-template-columns:repeat(2,1fr)}.grid.cols-2,.grid.cols-3,.grid.cols-4,.prompt-grid,.skill-grid,.okki-flow{grid-template-columns:1fr}.section-head{display:block}.nav{display:none}.hero-panel{min-height:360px}.metric-grid{grid-template-columns:1fr 1fr}}@media(max-width:560px){.shell{padding:12px}.top-inner{padding:10px 12px}.module-nav{grid-template-columns:1fr}.hero h1{font-size:34px}section.panel{padding:18px}.metric-grid{grid-template-columns:1fr}.table{display:block;overflow:auto}.btn{width:100%}}
+</style>
 </head>
 <body>
-  <div class="site-shell">
-    <header class="top-nav glass">
-      <div class="brand">geobyke</div>
-      <nav class="menu">
-        <a class="active" href="#">首页</a>
-        <a href="#">产品</a>
-        <a href="#">核心科技</a>
-        <a href="#">参数配置</a>
-        <a href="#">关于我们</a>
-      </nav>
-      <div class="nav-actions">
-        <button class="btn btn-dark">立即购买</button>
-        <button class="cart-btn" aria-label="购物车">🛒</button>
-      </div>
-    </header>
-
-    <section class="hero glass-soft">
-      <div class="hero-copy">
-        <h1>轻盈折叠，<br>智能出行新体验</h1>
-        <p>以科技赋能每一程，城市出行更高效、更自由。</p>
-        <div class="hero-cta">
-          <button class="btn btn-dark">立即购买 <span>→</span></button>
-          <button class="btn btn-outline">了解更多</button>
-        </div>
-      </div>
-      <div class="bike-silhouette" aria-hidden="true">
-        <svg viewBox="0 0 900 420" role="presentation">
-          <circle cx="210" cy="310" r="110" class="wheel"/>
-          <circle cx="680" cy="310" r="110" class="wheel"/>
-          <circle cx="210" cy="310" r="72" class="wheel-inner"/>
-          <circle cx="680" cy="310" r="72" class="wheel-inner"/>
-          <path d="M220 300 L360 190 L560 190 L670 300" class="frame"/>
-          <path d="M360 190 L320 300 L500 300 L560 190" class="frame"/>
-          <path d="M500 300 L440 300 L390 190" class="frame"/>
-          <line x1="560" y1="190" x2="610" y2="120" class="bar"/>
-          <line x1="610" y1="120" x2="700" y2="120" class="bar"/>
-          <line x1="350" y1="190" x2="330" y2="100" class="bar"/>
-          <ellipse cx="318" cy="90" rx="42" ry="14" class="seat"/>
-          <circle cx="500" cy="300" r="36" class="chain"/>
-          <line x1="500" y1="300" x2="470" y2="336" class="bar"/>
-        </svg>
-      </div>
-
-      <div class="hero-assurance glass">
-        <div class="item"><b>品质保障</b><small>整车1年质保</small></div>
-        <div class="item"><b>全国包邮</b><small>极速发货</small></div>
-        <div class="item"><b>专业售后</b><small>7天无忧退换</small></div>
-      </div>
-    </section>
-
-    <section class="selling-points card">
-      <article><h3>折叠便携</h3><p>3秒快速折叠，轻松收纳，随行随走</p></article>
-      <article><h3>长续航电池</h3><p>高性能锂电池，续航可达120公里</p></article>
-      <article><h3>智能仪表</h3><p>高清能量显示，骑行数据一目了然</p></article>
-      <article><h3>双碟刹制动</h3><p>前后双碟刹系统，制动更灵敏更安全</p></article>
-    </section>
-
-    <section class="craft-section">
-      <h2>匠心设计，科技赋能</h2>
-      <p>每一处细节，都是为更好的骑行体验。</p>
-      <div class="craft-grid">
-        <div class="tile tile-large"></div>
-        <div class="tile">3步快速折叠<br><span>体积小巧，轻松放入后备箱</span></div>
-        <div class="tile">智能仪表系统<br><span>实时显示速度、里程、电量等关键信息</span></div>
-        <div class="tile">一体化车架设计<br><span>航空级铝合金车架，轻盈坚固</span></div>
-      </div>
-    </section>
-
-    <section class="spec-section card">
-      <h2>参数配置</h2>
-      <div class="spec-grid">
-        <div><span>电机功率</span><strong>250W</strong></div>
-        <div><span>电池容量</span><strong>36V 10Ah</strong></div>
-        <div><span>续航里程</span><strong>120km</strong></div>
-        <div><span>整车重量</span><strong>18.5kg</strong></div>
-        <div><span>轮胎规格</span><strong>20 × 1.95</strong></div>
-        <div><span>制动系统</span><strong>双碟刹</strong></div>
-      </div>
-    </section>
-
-    <section class="bottom-cta card">
-      <h2>即刻启程，探索无限可能</h2>
-      <p>轻盈折叠，智能随行，开启属于你的自由之旅。</p>
-      <button class="btn btn-dark">立即购买 <span>→</span></button>
-    </section>
-
-    <footer class="footer">
-      <div class="brand-col">
-        <div class="brand">geobyke</div>
-        <p>智能骑行，畅享未来出行方式。</p>
-      </div>
-      <div class="link-col"><h4>产品</h4><a href="#">折叠电动车</a><a href="#">配件与周边</a></div>
-      <div class="link-col"><h4>服务支持</h4><a href="#">售后服务</a><a href="#">用户手册</a><a href="#">常见问题</a></div>
-      <div class="link-col"><h4>关于我们</h4><a href="#">品牌故事</a><a href="#">新闻资讯</a><a href="#">加入我们</a></div>
-      <div class="link-col"><h4>关注我们</h4><a href="#">微信</a><a href="#">微博</a><a href="#">抖音</a></div>
-    </footer>
-  </div>
+<header class="top"><div class="top-inner"><div class="brand"><span class="mark"></span>AccioWork 使用手册</div><nav class="nav"><a href="#stage-prepare">准备</a><a href="#stage-agent">Agent</a><a href="#stage-skill">Skill</a><a href="#stage-prompt">提示词</a><a href="#stage-pack">技能包</a><a href="#stage-sop">SOP</a><a href="#stage-okki">OKKI</a></nav></div></header>
+<main class="shell">
+<section class="hero" id="top"><div><div class="stage">星芽铁军 · 金华 · AccioWork</div><h1>AI 跨境SOP 手册与国际站技能包</h1><p>面向外贸团队的 AccioWork 使用手册，覆盖 Agent 搭建、Skill 导入、提示词工作台、AI 跨境SOP 手册与 OKKI 询盘转化流程。模块 05 的技能包均为 Markdown 文件，可直接下载后导入。</p><div class="hero-actions"><a class="btn" href="#stage-pack">下载技能包</a><a class="btn light" href="#stage-prompt">查看提示词</a></div></div><aside class="hero-panel"><div><div class="hint">Accio AI work style</div><div class="metric-grid"><div class="metric"><b>07</b><span>核心模块</span></div><div class="metric"><b>18</b><span>可导入技能包</span></div><div class="metric"><b>30</b><span>天落地 SOP</span></div><div class="metric"><b>OPC</b><span>标准展示</span></div></div></div><div class="flow"><div>准备 → 搭建 → 导入 → 使用</div><div>提示词 → SOP → OKKI 转化</div></div></aside></section>
+<div class="module-nav"><a href="#stage-prepare"><strong>01 准备工作</strong><span>账号、权限、资料准备</span></a><a href="#stage-agent"><strong>02 Agent 搭建</strong><span>智能体创建与配置</span></a><a href="#stage-skill"><strong>03 Skill 使用</strong><span>技能导入与调用</span></a><a href="#stage-prompt"><strong>04 提示词</strong><span>场景化提示词工作台</span></a><a href="#stage-pack"><strong>05 技能包</strong><span>18 个 .md 文件</span></a><a href="#stage-sop"><strong>06 SOP 手册</strong><span>一人 OPC 落地流程</span></a><a href="#stage-okki"><strong>07 OKKI</strong><span>询盘转化全流程</span></a></div>
+<section class="panel" id="stage-prepare"><div class="section-head"><div><div class="kicker">Module 01</div><h2>准备工作</h2><p>先把账号、产品、客户、店铺数据准备好，后续 Agent 与 Skill 才能稳定输出。</p></div><span class="tag">基础配置</span></div><div class="grid cols-4"><div class="card"><h3>账号权限</h3><p>确认 AccioWork、国际站后台、OKKI、素材库等账号可登录，并具备编辑或导入权限。</p></div><div class="card"><h3>产品资料</h3><p>准备主推产品、核心卖点、价格区间、目标市场、证书、交期和 MOQ。</p></div><div class="card"><h3>客户资料</h3><p>整理历史询盘、重点客户、常见问题、成交案例和失败原因。</p></div><div class="card"><h3>团队分工</h3><p>明确负责人、审核人、执行人和每日复盘节奏。</p></div></div></section>
+<section class="panel" id="stage-agent"><div class="section-head"><div><div class="kicker">Module 02</div><h2>Agent 搭建指南</h2><p>从角色定位、知识库、工具权限、输出格式四个层面搭建可复用智能体。</p></div><span class="tag">视频请使用本地包观看</span></div><div class="callout">GitHub 轻量版不内置 130MB 教学视频；本地包中仍保留视频文件。</div><div class="grid cols-2" style="margin-top:14px"><div class="step card"><div class="num">1</div><div><h3>定义角色</h3><p>写清 Agent 服务对象、业务目标、回答边界与输出语气。</p></div></div><div class="step card"><div class="num">2</div><div><h3>导入知识</h3><p>把 SOP、产品资料、成交案例、常用话术作为基础知识。</p></div></div><div class="step card"><div class="num">3</div><div><h3>配置流程</h3><p>按“输入信息 → 分析 → 生成方案 → 检查 → 输出”设置任务链路。</p></div></div><div class="step card"><div class="num">4</div><div><h3>测试迭代</h3><p>用真实询盘和运营场景测试，保留高质量输出作为样例。</p></div></div></div></section>
+<section class="panel" id="stage-skill"><div class="section-head"><div><div class="kicker">Module 03</div><h2>Skill 使用指南</h2><p>Skill 是可复制、可导入、可迭代的业务动作模板。优先复制 Accio_AI_产品中匹配技能，匹配不到再补写。</p></div><span class="tag">导入优先</span></div><div class="grid cols-3"><div class="card"><h3>复制匹配技能</h3><p>按场景在 Accio_AI_产品里找到最接近的技能包，直接覆盖导入。</p></div><div class="card"><h3>保持命名一致</h3><p>文件名、触发条件、输入字段和输出格式要让团队成员一眼看懂。</p></div><div class="card"><h3>用真实案例验证</h3><p>每个 Skill 至少用一条真实业务资料跑通，再进入日常使用。</p></div></div></section>
+<section class="panel" id="stage-prompt"><div class="section-head"><div><div class="kicker">Module 04</div><h2>提示词工作台</h2><p>按业务场景筛选提示词卡片，复制后即可交给 Agent 或团队执行。</p></div><span class="tag">新增：询盘转化</span></div><div class="tabs" id="promptTabs"><button class="tab active" data-filter="all">全部</button><button class="tab" data-filter="准备阶段">准备阶段</button><button class="tab" data-filter="启动阶段">启动阶段</button><button class="tab" data-filter="成熟阶段">成熟阶段</button><button class="tab" data-filter="询盘转化">询盘转化</button></div><div class="prompt-grid" id="promptGrid"></div></section>
+<section class="panel" id="stage-pack"><div class="section-head"><div><div class="kicker">Module 05</div><h2>国际站 Accio Work 技能包</h2><p>每个技能包对应一个 .md 文件，点击即可下载后导入 AccioWork。</p></div><span class="tag">18 个文件</span></div><input class="search" id="skillSearch" placeholder="搜索技能包，例如：询盘、选品、OKKI、数据"><div class="skill-grid" id="skillGrid"></div></section>
+<section class="panel" id="stage-sop"><div class="section-head"><div><div class="kicker">Module 06</div><h2>AI 跨境SOP 手册</h2><p>一人 OPC_AI 外贸生意 30 天落地 SOP 手册，强调“一个人也能跑通闭环”。</p></div><span class="tag">SOP 手册展示 OPC 标准</span></div><div class="grid cols-3"><div class="card"><h3>第 1 阶段：定位与准备</h3><p>明确产品、市场、客户画像、基础素材和数据表。</p></div><div class="card"><h3>第 2 阶段：店铺与内容</h3><p>完成店铺信息、产品发布、详情页、关键词和核心卖点。</p></div><div class="card"><h3>第 3 阶段：流量与询盘</h3><p>通过内容、广告、客户开发和询盘跟进建立转化入口。</p></div><div class="card"><h3>第 4 阶段：转化与成交</h3><p>询盘分层、报价、跟进节奏、异议处理、样品与订单推进。</p></div><div class="card"><h3>第 5 阶段：复盘与放大</h3><p>每周复盘数据、沉淀话术、优化 Skill、形成可复制 SOP。</p></div><div class="card"><h3>OPC 标准</h3><p>One Person Company：用 AI 把岗位动作标准化、自动化、可追踪化。</p></div></div><table class="table" style="margin-top:16px"><thead><tr><th>周期</th><th>核心动作</th><th>交付物</th></tr></thead><tbody><tr><td>1-7 天</td><td>业务定位、资料整理、账号配置</td><td>产品资料库、客户画像、Agent 初版</td></tr><tr><td>8-15 天</td><td>店铺搭建、产品上架、内容优化</td><td>主推产品矩阵、关键词表、详情页文案</td></tr><tr><td>16-23 天</td><td>推广引流、询盘回复、客户分层</td><td>跟进 SOP、报价模板、客户标签</td></tr><tr><td>24-30 天</td><td>数据复盘、流程固化、团队交接</td><td>周报模板、技能包、OPC 操作手册</td></tr></tbody></table></section>
+<section class="panel" id="stage-okki"><div class="section-head"><div><div class="kicker">Module 07</div><h2>OKKI 询盘转化全流程</h2><p>从线索进入、客户识别、跟进执行到成交复盘，形成 OKKI 与 AccioWork 的协同闭环。</p></div><span class="tag">OKKI</span></div><div class="okki-flow"><div class="okki"><b>01 线索进入</b>统一记录询盘来源、产品、国家、预算、紧急程度。</div><div class="okki"><b>02 客户识别</b>用 AccioWork 做买家背调、采购意图和风险判断。</div><div class="okki"><b>03 跟进执行</b>生成首询回复、报价、追踪话术和下一步行动。</div><div class="okki"><b>04 转化复盘</b>沉淀成交路径、失败原因、业务员动作和 SOP 优化点。</div></div></section>
+<footer class="footer">AccioWork 使用手册 · 星芽铁军 · 金华 · GitHub Pages 轻量公网版</footer>
+</main><div class="toast" id="toast">已复制</div>
+<script>
+const prompts=[
+['准备阶段','市场调研：目标市场分析','分析目标市场规模、竞争格局、买家需求和进入机会。'],['准备阶段','选品分析：热搜词与机会品','基于平台热搜词和行业趋势，筛选高潜力产品。'],['准备阶段','店铺搭建：首页与公司简介','生成店铺首页、公司简介和主营产品表达。'],['启动阶段','产品上架：标题与属性','生成产品标题、属性建议、关键词和卖点结构。'],['启动阶段','首询回复：快速响应','根据买家需求生成专业首询回复和追问问题。'],['启动阶段','推广引流：广告与内容','规划关键词、广告方向和内容引流主题。'],['成熟阶段','日常运营：每日巡检','检查曝光、点击、询盘、回复和异常动作。'],['成熟阶段','谈判跟进：报价与让步','生成报价、议价、样品、交期和付款话术。'],['成熟阶段','活动运营：大促准备','梳理活动节奏、产品组合、优惠策略和复盘指标。'],['成熟阶段','客户开发：目标客户清单','设计开发信、客户筛选规则和触达节奏。'],['成熟阶段','产品矩阵：组合规划','根据利润、流量和成交数据优化产品梯队。'],['成熟阶段','品牌建设：差异化表达','输出品牌故事、核心优势、证书背书和案例表达。'],['询盘转化','询盘转化：潜在客户深度背调','分析公司背景、采购能力、决策链路和合作风险。'],['询盘转化','询盘转化：询盘建档与沟通','把询盘拆成客户档案、需求字段、缺失信息和下一步话术。'],['询盘转化','询盘转化：买家分层与差异化跟进','按高意向、待培育、低匹配客户制定不同跟进节奏。'],['询盘转化','询盘转化：每周询盘沟通质检报告','复盘回复时效、问题覆盖、报价质量和推进动作。'],['询盘转化','询盘转化：每日商机转化分析报告','汇总当天商机质量、异常机会、待跟进清单和负责人。'],['询盘转化','询盘转化：每月全维度销售复盘报告','分析线索、询盘、报价、成交、流失原因和下月优化。']
+];
+const skills=[
+['市场调研','准备阶段','分析目标市场规模、竞争格局与买家需求。'],['选品分析','准备阶段','筛选高潜力产品并评估可行性。'],['店铺搭建','准备阶段','生成店铺首页、公司简介与主营产品内容。'],['产品上架','启动阶段','生成标题、属性、关键词与卖点。'],['首询回复','启动阶段','快速产出专业首询回复和追问。'],['推广引流','启动阶段','规划关键词、内容和广告引流动作。'],['日常运营','成熟阶段','每日运营巡检和任务清单。'],['谈判跟进','成熟阶段','报价、议价和成交推进话术。'],['活动运营','成熟阶段','大促活动策划、执行和复盘。'],['客户开发','成熟阶段','客户名单、开发信和触达节奏。'],['产品矩阵','成熟阶段','规划引流款、利润款和形象款。'],['品牌建设','成熟阶段','品牌故事、背书与差异化表达。'],['老客维护','成熟阶段','复购、转介绍和长期关系维护。'],['数据分析','成熟阶段','周报、月报和经营诊断。'],['战略规划','成熟阶段','年度目标、市场路径和资源配置。'],['紧急处理','成熟阶段','客诉、交期、质量和风险应急。'],['节日营销','成熟阶段','节日主题内容和促销节奏。'],['AI提效进阶','成熟阶段','用 AI 优化个人和团队工作流。']
+];
+const promptGrid=document.getElementById('promptGrid');function renderPrompts(filter='all'){promptGrid.innerHTML=prompts.map((p,i)=>`<article class="prompt-card ${(filter==='all'||p[0]===filter)?'show':''}"><small>${p[0]}</small><h3>${p[1]}</h3><p>${p[2]}</p><button class="copy" data-copy="请基于以下场景生成可执行方案：${p[1]}。要求包含输入信息、分析步骤、输出格式和检查清单。">复制提示词</button></article>`).join('')}renderPrompts();document.getElementById('promptTabs').addEventListener('click',e=>{if(!e.target.matches('.tab'))return;document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));e.target.classList.add('active');renderPrompts(e.target.dataset.filter)});
+const skillGrid=document.getElementById('skillGrid');function renderSkills(q=''){const query=q.trim().toLowerCase();skillGrid.innerHTML=skills.filter(s=>(s.join('').toLowerCase().includes(query))).map(s=>`<article class="skill-card"><span class="tag">${s[1]}</span><h3>${s[0]}技能包</h3><p>${s[2]}</p><a class="download" href="skills/${encodeURIComponent(s[0])}.md" download="${s[0]}.md">下载导入 .md</a></article>`).join('')}renderSkills();document.getElementById('skillSearch').addEventListener('input',e=>renderSkills(e.target.value));
+document.addEventListener('click',async e=>{if(!e.target.matches('.copy'))return;await navigator.clipboard.writeText(e.target.dataset.copy);const toast=document.getElementById('toast');toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),1200)});
+const links=[...document.querySelectorAll('.nav a')];addEventListener('scroll',()=>{let current='';document.querySelectorAll('section.panel').forEach(s=>{if(scrollY>=s.offsetTop-140)current='#'+s.id});links.forEach(a=>a.classList.toggle('active',a.getAttribute('href')===current))});
+</script>
 </body>
 </html>
