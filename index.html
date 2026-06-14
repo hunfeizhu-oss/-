@@ -114,16 +114,17 @@ body {
   display: inline-flex;
   align-items: flex-start;
   gap: 6px;
-  background: var(--accio-orange-pale);
-  border: 1px solid var(--accio-orange-mid);
-  color: var(--accio-orange);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
   font-size: 12px;
   font-weight: 500;
-  padding: 4px 12px;
+  padding: 6px 12px;
   border-radius: var(--radius-md);
   margin-bottom: 20px;
   line-height: 1.6;
   max-width: 100%;
+  box-shadow: var(--shadow-sm);
 }
 .hero-badge::before {
   content: '';
@@ -132,6 +133,14 @@ body {
   border-radius: 50%;
   flex-shrink: 0;
   margin-top: 6px;
+}
+.hero-badge-title {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+.hero-badge-address {
+  color: var(--text-muted);
+  font-weight: 500;
 }
 .hero h1 {
   font-size: 44px;
@@ -1526,7 +1535,7 @@ body {
 <!-- HERO -->
 <div class="hero">
   <div>
-    <div class="hero-badge"><span>金华阿里国际站 Accio Work 使用手册 · 金华市星芽网络技术有限公司-阿里巴巴国际站金华跨境电商服务中心<br>地址：金华市婺城区秋滨街道金衢路199号物联科技大厦6楼603室</span></div>
+    <div class="hero-badge"><span><span class="hero-badge-title">金华阿里国际站 Accio Work 使用手册 · 金华市星芽网络技术有限公司-阿里巴巴国际站金华跨境电商服务中心</span><br><span class="hero-badge-address">地址：金华市婺城区秋滨街道金衢路199号物联科技大厦6楼603室</span></span></div>
     <h1>让 AI 成为你的<span>最强助手</span></h1>
     <p>AccioWork 是阿里巴巴国际站推出的 AI 智能工作台，集智能体搭建、技能调用、提示词优化于一体，助力跨境卖家提升运营效率。</p>
   </div>
