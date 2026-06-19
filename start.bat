@@ -58,6 +58,7 @@ exit /b 1
 echo.
 echo [ERROR] 未找到可用的 Python 3。
 echo 请安装 Python 3.9 或更高版本，并在安装时勾选 Add Python to PATH。
+echo 也可以双击 install-windows.bat，尝试自动安装 Python 后启动。
 echo 日志文件：%LOG_FILE%
 pause
 exit /b 1

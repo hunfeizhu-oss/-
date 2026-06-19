@@ -4,7 +4,7 @@
 
 ## 使用方法
 
-1. macOS 双击 `start.command`；Windows 双击 `start.bat`。
+1. macOS 双击 `start.command`；Windows 首次使用建议双击 `install-windows.bat`，已安装 Python 的电脑可直接双击 `start.bat`。
 2. 浏览器会自动打开本地页面，默认地址为 `http://127.0.0.1:8765`。如果端口已占用，工具会自动顺延。
 3. 选择模板，上传人物照片并填写缺少的战报信息，点击“生成战报图片”。
 4. 在右侧预览并下载 PNG 或 PPTX。
@@ -37,7 +37,7 @@
 3. 如果无法启动，双击 `windows-diagnose.bat`。诊断窗口会检查 Python、模板和 PowerShell。
 4. 启动器会在工具目录生成 `windows-start.log`。如果仍然失败，请提供窗口中的报错和该日志文件。
 
-Windows 需要 Python 3.9 或更高版本。新版启动器会自动尝试 `py -3`、`python`、`python3` 以及常见 Python 安装目录；失败时窗口会停留显示原因，不会直接闪退。
+Windows 需要 Python 3.9 或更高版本。首次使用可以双击 `install-windows.bat`：它会先检测 Python，缺失时尝试通过 Windows 自带的 `winget` 安装 Python 3.12；如果公司电脑禁用了安装或没有 winget，会自动打开 Python 官方下载页，并提示手动安装时勾选 `Add Python to PATH`。新版启动器会自动尝试 `py -3`、`python`、`python3` 以及常见 Python 安装目录；失败时窗口会停留显示原因，不会直接闪退。
 
 ## 添加模板
 
