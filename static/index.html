@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>智启新程 · 战报生成器</title>
+    <title>智启新程 · 战报海报生成器</title>
     <style>
       :root {
         color-scheme: light;
@@ -143,6 +143,9 @@
 
       .share-banner {
         display: none;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
         margin: 0 0 16px;
         padding: 12px 14px;
         border: 1px solid #dce4ff;
@@ -152,6 +155,97 @@
         line-height: 1.65;
         background: #f7f9ff;
       }
+
+      .share-banner strong { color: #24457c; font-weight: 900; }
+      .share-banner a {
+        display: inline-flex;
+        align-items: center;
+        min-height: 28px;
+        padding: 0 9px;
+        border: 1px solid #cad5ff;
+        border-radius: 999px;
+        color: var(--primary-strong);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 12px;
+        font-weight: 800;
+        text-decoration: none;
+        background: #fff;
+      }
+      .share-banner a:hover { border-color: var(--primary); background: #fdfdff; }
+      .share-separator { color: #77819a; }
+
+      .diagnostics-panel {
+        display: none;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 14px;
+        align-items: center;
+        margin: 0 0 16px;
+        padding: 14px 16px;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.82);
+      }
+
+      .diagnostics-panel.ok { border-color: rgba(18, 163, 107, 0.26); background: #f7fffb; }
+      .diagnostics-panel.warn { border-color: rgba(221, 146, 38, 0.32); background: #fffaf0; }
+      .diagnostics-panel.error { border-color: rgba(216, 36, 76, 0.26); background: #fff7fa; }
+
+      .diag-copy {
+        min-width: 0;
+      }
+
+      .diag-title {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+        margin: 0 0 5px;
+        color: var(--ink);
+        font-size: 14px;
+        font-weight: 850;
+      }
+
+      .diag-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: var(--success);
+      }
+
+      .diagnostics-panel.warn .diag-dot { background: #dd9226; }
+      .diagnostics-panel.error .diag-dot { background: var(--danger); }
+
+      .diag-text {
+        margin: 0;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.55;
+      }
+
+      .diag-checks {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 8px;
+      }
+
+      .diag-check {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 9px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        color: #4f596d;
+        font-size: 12px;
+        font-weight: 750;
+        background: #fff;
+        white-space: nowrap;
+      }
+
+      .diag-check.ok { color: #167552; border-color: rgba(18, 163, 107, 0.24); }
+      .diag-check.warn { color: #9a6415; border-color: rgba(221, 146, 38, 0.28); }
+      .diag-check.error { color: var(--danger); border-color: rgba(216, 36, 76, 0.22); }
 
       .guide-strip {
         display: grid;
@@ -324,7 +418,7 @@
         display: none;
         width: 100%;
         height: 100%;
-        object-fit: cover;
+        object-fit: contain;
       }
 
       .photo-copy { display: grid; gap: 7px; }
@@ -354,6 +448,7 @@
 
       .file-button,
       .secondary,
+      .crop-upload,
       .clear-upload {
         display: inline-flex;
         align-items: center;
@@ -375,7 +470,16 @@
 
       .file-button:hover,
       .secondary:hover,
+      .crop-upload:hover,
       .clear-upload:hover { border-color: var(--primary); }
+      .crop-upload {
+        display: none;
+        height: 34px;
+        padding: 0 10px;
+        border: 1px solid var(--line);
+        color: var(--primary-strong);
+        background: #fff;
+      }
       .clear-upload {
         display: none;
         height: 34px;
@@ -385,6 +489,7 @@
         background: #fff;
       }
 
+      .photo-upload.has-file .crop-upload,
       .photo-upload.has-file .clear-upload { display: inline-flex; }
       .photo-file {
         position: absolute;
@@ -403,10 +508,26 @@
       }
 
       .field-control {
+        position: relative;
         padding: 13px;
         border: 1px solid var(--line);
         border-radius: 16px;
         background: #fff;
+        transition: 150ms ease;
+      }
+
+      .field-control:focus-within {
+        border-color: rgba(91, 108, 255, 0.52);
+        box-shadow: 0 10px 24px rgba(29, 38, 74, 0.06);
+      }
+
+      .field-control.filled {
+        border-color: rgba(18, 163, 107, 0.24);
+      }
+
+      .field-control.custom {
+        border-color: rgba(91, 108, 255, 0.28);
+        background: #fbfcff;
       }
 
       .field-control.full { grid-column: 1 / -1; }
@@ -416,6 +537,33 @@
         gap: 10px;
         align-items: center;
         color: var(--ink);
+      }
+
+      .field-label {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .field-status {
+        flex: 0 0 auto;
+        padding: 2px 7px;
+        border-radius: 999px;
+        color: #8a93a6;
+        font-size: 11px;
+        font-weight: 850;
+        background: #f2f4f8;
+      }
+
+      .field-status.filled {
+        color: #167552;
+        background: #eefaf4;
+      }
+
+      .field-status.custom {
+        color: var(--primary-strong);
+        background: var(--primary-soft);
       }
 
       input, textarea, select {
@@ -444,9 +592,64 @@
         background: #f8f9ff;
       }
 
+      .style-intro {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+
+      .style-intro strong {
+        color: var(--ink);
+        font-size: 13px;
+      }
+
+      .style-intro span {
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.55;
+      }
+
       .style-editor {
         border: 1px solid var(--line);
         border-radius: 13px;
+        background: #fff;
+        transition: 150ms ease;
+      }
+
+      .style-editor.has-custom {
+        border-color: rgba(91, 108, 255, 0.36);
+        box-shadow: 0 0 0 3px rgba(91, 108, 255, 0.06);
+      }
+
+      .field-control > .style-editor {
+        border-color: transparent;
+        background: transparent;
+      }
+
+      .field-control > .style-editor:not([open]):not(.has-custom) {
+        display: none;
+      }
+
+      .field-control:hover > .style-editor:not([open]),
+      .field-control:focus-within > .style-editor:not([open]),
+      .field-control > .style-editor.has-custom:not([open]) {
+        display: block;
+        margin-top: -2px;
+      }
+
+      .field-control > .style-editor:not([open]) summary {
+        padding: 2px 0 0;
+        color: #77819a;
+      }
+
+      .field-control > .style-editor:not([open]) .style-badge {
+        display: none;
+      }
+
+      .field-control > .style-editor[open] {
+        border-color: var(--line);
         background: #fff;
       }
 
@@ -457,6 +660,77 @@
         font-size: 12px;
         font-weight: 850;
         list-style-position: inside;
+      }
+
+      .style-summary {
+        display: inline-flex;
+        width: calc(100% - 16px);
+        justify-content: space-between;
+        gap: 10px;
+        align-items: center;
+        vertical-align: middle;
+      }
+
+      .style-badge {
+        flex: 0 0 auto;
+        padding: 2px 7px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        color: #667188;
+        font-size: 11px;
+        font-weight: 850;
+        background: #f7f8fc;
+      }
+
+      .style-badge.active {
+        border-color: rgba(91, 108, 255, 0.26);
+        color: var(--primary-strong);
+        background: var(--primary-soft);
+      }
+
+      .style-helper {
+        margin: -2px 10px 9px;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.55;
+      }
+
+      .style-presets {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        padding: 0 10px 10px;
+      }
+
+      .style-preset {
+        min-height: 30px;
+        padding: 0 9px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        color: #445068;
+        font-size: 12px;
+        font-weight: 850;
+        background: #fff;
+      }
+
+      .style-preset:hover {
+        border-color: var(--primary);
+        color: var(--primary-strong);
+        background: #fbfcff;
+      }
+
+      .advanced-style {
+        margin: 0 10px 10px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: #fbfcff;
+      }
+
+      .advanced-style summary {
+        padding: 8px 10px;
+        color: #596276;
+        font-size: 12px;
+        font-weight: 850;
       }
 
       .style-grid {
@@ -470,15 +744,110 @@
       .style-grid select, .style-grid input { height: 34px; font-size: 12px; }
       .style-grid .style-reset { align-self: end; height: 34px; }
 
+      .color-swatches {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        margin-top: 6px;
+      }
+
+      .color-swatch {
+        width: 22px;
+        height: 22px;
+        min-width: 22px;
+        padding: 0;
+        border: 1px solid #ccd3e4;
+        border-radius: 999px;
+        background: var(--swatch-color, #111827);
+      }
+
+      .color-swatch.active {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(91, 108, 255, 0.14);
+      }
+
       .action-bar {
+        position: sticky;
+        bottom: 14px;
+        z-index: 6;
         display: flex;
         justify-content: space-between;
         gap: 14px;
         align-items: center;
-        margin-top: 20px;
-        padding-top: 17px;
-        border-top: 1px solid var(--line);
+        margin: 22px -4px -4px;
+        padding: 12px;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.92);
+        box-shadow: 0 -10px 30px rgba(29, 38, 74, 0.08);
+        backdrop-filter: blur(12px);
       }
+
+      .action-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 14px;
+        align-items: center;
+      }
+
+      .mode-toggle {
+        display: inline-flex;
+        grid-template-columns: none;
+        width: fit-content;
+        align-items: center;
+        gap: 8px;
+        color: #445068;
+        font-size: 12px;
+        font-weight: 850;
+      }
+
+      .mode-toggle input {
+        width: 16px;
+        height: 16px;
+        accent-color: var(--primary);
+      }
+
+      .draft-status {
+        color: #657187;
+        font-size: 12px;
+        font-weight: 760;
+      }
+
+      .generate-hint {
+        display: inline-flex;
+        align-items: center;
+        min-height: 28px;
+        padding: 0 9px;
+        border-radius: 999px;
+        color: #657187;
+        font-size: 12px;
+        font-weight: 850;
+        background: #f2f4f8;
+      }
+
+      .generate-hint.pending {
+        color: #9a6415;
+        background: #fff4dd;
+      }
+
+      .generate-hint.ok {
+        color: #167552;
+        background: #eefaf4;
+      }
+
+      .draft-clear {
+        display: none;
+        height: 30px;
+        padding: 0 9px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        color: #596276;
+        font-size: 12px;
+        font-weight: 850;
+        background: #fff;
+      }
+
+      .draft-clear:hover { border-color: var(--primary); }
 
       .primary {
         min-width: 170px;
@@ -493,6 +862,11 @@
       }
 
       .primary:hover { background: var(--primary-strong); }
+      .primary:active { transform: translateY(1px); }
+      .primary.needs-generate {
+        background: linear-gradient(135deg, var(--primary), #7c5cff);
+        box-shadow: 0 12px 28px rgba(91, 108, 255, 0.28);
+      }
       .primary:disabled {
         cursor: wait;
         opacity: 0.68;
@@ -566,6 +940,104 @@
         filter: drop-shadow(0 14px 26px rgba(35, 42, 72, 0.13));
       }
 
+      .editor-wrap {
+        position: relative;
+        display: none;
+        width: fit-content;
+        max-width: 100%;
+        max-height: 680px;
+      }
+
+      .editor-wrap .preview {
+        display: block;
+        width: auto;
+        height: auto;
+      }
+
+      .preview-tip {
+        display: none;
+        margin-top: 10px;
+        padding: 9px 10px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        color: #526075;
+        font-size: 12px;
+        font-weight: 850;
+        line-height: 1.55;
+        text-align: center;
+        background: #f8f9ff;
+      }
+
+      .overlay-layer {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+      }
+
+      .text-hotspot {
+        position: absolute;
+        display: grid;
+        min-width: 42px;
+        min-height: 24px;
+        border: 1px dashed rgba(91, 108, 255, 0.52);
+        border-radius: 8px;
+        background: rgba(91, 108, 255, 0.05);
+        pointer-events: auto;
+        transition: 120ms ease;
+      }
+
+      .text-hotspot:hover,
+      .text-hotspot.editing,
+      .text-hotspot.dirty {
+        z-index: 3;
+        border-color: var(--primary);
+        background: rgba(255, 255, 255, 0.82);
+        box-shadow: 0 10px 22px rgba(29, 38, 74, 0.12);
+      }
+
+      .hotspot-label {
+        position: absolute;
+        left: -1px;
+        top: -22px;
+        display: none;
+        max-width: 130px;
+        overflow: hidden;
+        padding: 3px 7px;
+        border-radius: 999px;
+        color: #fff;
+        font-size: 11px;
+        font-weight: 850;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        background: var(--primary);
+      }
+
+      .text-hotspot:hover .hotspot-label,
+      .text-hotspot.editing .hotspot-label { display: block; }
+
+      .hotspot-text {
+        width: 100%;
+        min-height: 100%;
+        overflow: hidden;
+        padding: 4px 6px;
+        border: 0;
+        outline: none;
+        color: transparent;
+        font-size: clamp(12px, 2.4vw, 20px);
+        font-weight: 850;
+        line-height: 1.22;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+
+      .text-hotspot:hover .hotspot-text,
+      .text-hotspot.editing .hotspot-text,
+      .text-hotspot.dirty .hotspot-text { color: var(--hotspot-color, var(--ink)); }
+
+      .text-hotspot.dirty .hotspot-text {
+        background: rgba(255, 255, 255, 0.88);
+      }
+
       .downloads {
         display: none;
         grid-template-columns: 1fr 1fr;
@@ -588,6 +1060,210 @@
       .notice { min-height: 42px; margin-top: 12px; color: var(--muted); font-size: 13px; line-height: 1.55; }
       .notice.error { color: var(--danger); }
 
+      .history {
+        display: none;
+        margin-top: 16px;
+        border-top: 1px solid var(--line);
+        padding-top: 14px;
+      }
+
+      .history-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: center;
+        margin-bottom: 8px;
+      }
+
+      .history-tools {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .history-search {
+        width: min(170px, 42vw);
+        height: 34px;
+        border-radius: 10px;
+        font-size: 12px;
+      }
+
+      .history-list {
+        display: grid;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        overflow: hidden;
+        background: #fff;
+      }
+
+      .history-item {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 10px;
+        align-items: center;
+        width: 100%;
+        padding: 9px;
+        border-bottom: 1px solid var(--line);
+        color: var(--ink);
+        background: #fff;
+      }
+
+      .history-item:last-child { border-bottom: 0; }
+      .history-item:hover { background: #f8f9ff; }
+      .history-item.active { background: var(--primary-soft); }
+
+      .history-main {
+        display: grid;
+        grid-template-columns: 54px minmax(0, 1fr) auto;
+        gap: 10px;
+        align-items: center;
+        min-width: 0;
+        border: 0;
+        color: inherit;
+        text-align: left;
+        background: transparent;
+      }
+
+      .history-delete {
+        width: 34px;
+        height: 34px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        color: #8a3650;
+        font-size: 16px;
+        font-weight: 900;
+        background: #fff;
+      }
+
+      .history-delete:hover {
+        border-color: rgba(216, 36, 76, 0.38);
+        background: #fff5f7;
+      }
+
+      .history-thumb {
+        width: 54px;
+        height: 38px;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel-soft);
+      }
+
+      .history-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .history-copy {
+        display: grid;
+        gap: 3px;
+        min-width: 0;
+      }
+
+      .history-copy strong,
+      .history-copy span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .history-copy strong { font-size: 12px; }
+      .history-copy span { color: var(--muted); font-size: 11px; }
+
+      .history-status {
+        padding: 4px 7px;
+        border-radius: 999px;
+        color: #526075;
+        font-size: 11px;
+        font-weight: 850;
+        background: #f1f3f8;
+      }
+
+      .history-item.active .history-status {
+        color: var(--primary-strong);
+        background: #fff;
+      }
+
+      .history-empty {
+        padding: 16px;
+        color: var(--muted);
+        font-size: 12px;
+        text-align: center;
+      }
+
+      .crop-modal {
+        position: fixed;
+        inset: 0;
+        z-index: 20;
+        display: none;
+        place-items: center;
+        padding: 18px;
+        background: rgba(21, 25, 34, 0.46);
+      }
+
+      .crop-modal.open { display: grid; }
+
+      .crop-dialog {
+        width: min(620px, 100%);
+        max-height: min(88vh, 780px);
+        overflow: auto;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: #fff;
+        box-shadow: 0 24px 70px rgba(21, 25, 34, 0.24);
+      }
+
+      .crop-head,
+      .crop-actions {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: center;
+        padding: 14px 16px;
+      }
+
+      .crop-head { border-bottom: 1px solid var(--line); }
+      .crop-actions { border-top: 1px solid var(--line); }
+
+      .crop-body {
+        display: grid;
+        gap: 14px;
+        padding: 16px;
+      }
+
+      .crop-canvas-wrap {
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: #f3f5fa;
+      }
+
+      #cropCanvas {
+        display: block;
+        max-width: 100%;
+        max-height: 430px;
+      }
+
+      .crop-controls {
+        display: grid;
+        gap: 10px;
+      }
+
+      .crop-controls label {
+        grid-template-columns: 84px minmax(0, 1fr);
+        align-items: center;
+        color: #4f596d;
+        font-size: 12px;
+      }
+
+      .crop-controls input {
+        height: auto;
+        padding: 0;
+      }
+
       @media (max-width: 1080px) {
         header.hero { display: grid; }
         .hero-actions { justify-items: start; min-width: 0; }
@@ -602,10 +1278,17 @@
         h1 { font-size: clamp(30px, 10vw, 42px); }
         .subtitle { font-size: 14px; }
         .guide-strip { grid-template-columns: 1fr; }
+        .diagnostics-panel { grid-template-columns: 1fr; }
+        .diag-checks { justify-content: flex-start; }
         #uploads { grid-template-columns: 1fr; }
         .fields { grid-template-columns: 1fr; }
         .style-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-        .action-bar { display: grid; }
+        .action-bar { position: static; display: grid; margin: 20px 0 0; }
+        .history-head { display: grid; align-items: stretch; }
+        .history-tools { justify-content: space-between; }
+        .history-search { width: 100%; }
+        .history-main { grid-template-columns: 48px minmax(0, 1fr); }
+        .history-status { display: none; }
         .primary { width: 100%; }
       }
     </style>
@@ -614,25 +1297,32 @@
     <main class="shell">
       <header class="hero">
         <div class="hero-copy">
-          <p class="eyebrow">战报生成工具</p>
-          <h1>智启新程 · 战报生成器</h1>
-          <p class="subtitle">读取 PPT 模板，上传人物照片和战报图片，补全文案与样式，一键生成可发布 PNG 和可继续编辑 PPTX。</p>
+          <p class="eyebrow">本地战报海报工具</p>
+          <h1>智启新程 · 战报海报生成器</h1>
+          <p class="subtitle">把 PPT 模板变成可复用的战报海报工作台：上传人物与战报图片，补全文案和样式，一键生成可发布 PNG，并保留可继续编辑的 PPTX。</p>
         </div>
         <div class="hero-actions">
           <div id="runMode" class="status">本地运行 · 文件不上传</div>
           <div class="hero-pills">
-            <span>模板更新</span>
-            <span>图片不变形</span>
-            <span>文案可调</span>
-            <span>多人共享</span>
+            <span>一键更新模板</span>
+            <span>人物图不变形</span>
+            <span>文案样式可调</span>
+            <span>同事链接访问</span>
           </div>
         </div>
       </header>
       <div id="shareBanner" class="share-banner"></div>
+      <div id="diagnosticsPanel" class="diagnostics-panel" aria-live="polite">
+        <div class="diag-copy">
+          <div class="diag-title"><span class="diag-dot"></span><span id="diagTitle">使用说明</span></div>
+          <p id="diagText" class="diag-text">选择模板、上传图片、补全文案后，点击“生成战报图片”即可下载 PNG 或 PPTX。</p>
+        </div>
+        <div id="diagChecks" class="diag-checks"></div>
+      </div>
       <div class="guide-strip">
-        <div class="guide-card"><strong>1. 选择模板</strong><span>自动识别字段和图片位，新增模板后可一键刷新。</span></div>
-        <div class="guide-card"><strong>2. 上传图片</strong><span>A200 支持双人物，横版支持 5 张战报图片。</span></div>
-        <div class="guide-card"><strong>3. 调整样式</strong><span>所有文案支持颜色、字体、字号和粗细调整。</span></div>
+        <div class="guide-card"><strong>1. 选模板</strong><span>自动读取字段和图片位，新增或替换 PPTX 后可一键刷新。</span></div>
+        <div class="guide-card"><strong>2. 放素材</strong><span>上传人物照和战报图，裁切后按模板比例写入，不拉伸变形。</span></div>
+        <div class="guide-card"><strong>3. 出海报</strong><span>统一调整字体、颜色和字号，生成 PNG，也可下载 PPTX 继续改。</span></div>
       </div>
 
       <div class="layout">
@@ -644,20 +1334,30 @@
               <button id="refreshTemplates" class="secondary" type="button">更新最新模板</button>
             </div>
           </div>
-          <div id="templateRefreshStatus" class="refresh-status">替换或新增 PPTX 后，点击按钮即可重新读取。</div>
+          <div id="templateRefreshStatus" class="refresh-status">新增、替换或改名 PPTX 后，点击“更新最新模板”即可重新读取字段。</div>
           <div id="templates" class="templates"></div>
 
           <div class="section-head">
             <h2>2. 填写战报信息</h2>
             <span id="selectedName" class="muted tiny"></span>
           </div>
-          <div class="refresh-status">动态文字会沿用模板原生风格，并根据内容长度自动调整字号；海报底部会自动加入固定口号。</div>
+          <div class="refresh-status">一般只需填写内容；字体和排版默认跟随模板，生成后不合适可直接点图上文字修改。</div>
           <form id="reportForm">
             <div id="globalStyle" class="global-style"></div>
             <div id="uploads"></div>
             <div id="fields" class="fields"></div>
             <div class="action-bar">
-              <span class="muted tiny">生成图片时会调用 Keynote 或 PowerPoint，多人使用时任务会自动排队。</span>
+              <div class="action-meta">
+                <span class="muted tiny">生成时会调用本机 Keynote 或 PowerPoint；多人同时使用会自动排队。</span>
+                <label class="mode-toggle">
+                  <input id="autoUpdate" type="checkbox" />
+                  自动更新
+                </label>
+                <span id="draftStatus" class="draft-status">草稿未保存</span>
+                <span id="generateHint" class="generate-hint">填好信息后生成</span>
+                <button id="clearDraft" class="draft-clear" type="button">清空草稿</button>
+                <button id="scrollPreview" class="secondary scroll-preview" type="button">查看预览</button>
+              </div>
               <button id="generate" class="primary" type="submit">生成战报图片</button>
             </div>
           </form>
@@ -669,36 +1369,787 @@
             <span id="resultTag" class="muted tiny">等待生成</span>
           </div>
           <div class="result-stage">
-            <p id="placeholder" class="placeholder">填写左侧字段后生成战报。生成完成后，可直接预览并下载图片。</p>
-            <img id="preview" class="preview" alt="生成后的战报预览" />
+            <p id="placeholder" class="placeholder">左侧填好内容并生成。完成后可直接点海报上的文字修改，再下载 PNG 或 PPTX。</p>
+            <div id="editorWrap" class="editor-wrap">
+              <img id="preview" class="preview" alt="生成后的战报预览" />
+              <div id="overlayLayer" class="overlay-layer"></div>
+            </div>
           </div>
+          <div id="previewTip" class="preview-tip">看到文字不合适，直接点海报上的文字改</div>
           <div id="downloads" class="downloads">
             <a id="imageDownload" class="download" download>下载 PNG</a>
             <a id="pptxDownload" class="download" download>下载 PPTX</a>
           </div>
           <div id="notice" class="notice"></div>
+          <div id="history" class="history">
+            <div class="history-head">
+              <h3>生成历史</h3>
+              <div class="history-tools">
+                <input id="historySearch" class="history-search" type="search" placeholder="搜索历史" />
+                <button id="refreshHistory" class="secondary" type="button">刷新</button>
+              </div>
+            </div>
+            <div id="historyList" class="history-list"></div>
+          </div>
         </aside>
       </div>
     </main>
 
+    <div id="cropModal" class="crop-modal" aria-hidden="true">
+      <div class="crop-dialog" role="dialog" aria-modal="true" aria-labelledby="cropTitle">
+        <div class="crop-head">
+          <div>
+            <h3 id="cropTitle">编辑图片裁切</h3>
+            <span id="cropHint" class="muted tiny">调整画面位置后应用到上传图位。</span>
+          </div>
+          <button id="cropClose" class="secondary" type="button">关闭</button>
+        </div>
+        <div class="crop-body">
+          <div class="crop-canvas-wrap">
+            <canvas id="cropCanvas"></canvas>
+          </div>
+          <div class="crop-controls">
+            <label>缩放 <input id="cropZoom" type="range" min="1" max="3" step="0.01" value="1" /></label>
+            <label>水平 <input id="cropX" type="range" min="-100" max="100" step="1" value="0" /></label>
+            <label>垂直 <input id="cropY" type="range" min="-100" max="100" step="1" value="0" /></label>
+          </div>
+        </div>
+        <div class="crop-actions">
+          <button id="cropReset" class="secondary" type="button">居中</button>
+          <button id="cropApply" class="primary" type="button">应用裁切</button>
+        </div>
+      </div>
+    </div>
+
     <script>
-      const state = { templates: [], selected: null, uploads: {}, textStyles: {}, revision: "" };
+      const state = {
+        templates: [],
+        selected: null,
+        uploads: {},
+        uploadSources: {},
+        cropSettings: {},
+        textStyles: {},
+        revision: "",
+        editorFields: [],
+        hasResult: false,
+        isGenerating: false,
+        pendingGenerate: false,
+        pendingChanges: false,
+        imageTextDirty: false,
+        diagnostics: null,
+        autoUpdate: false,
+        autoTimer: 0,
+        generateSerial: 0,
+        history: [],
+        historyQuery: "",
+        activeResultId: "",
+        draftTimer: 0,
+        isBooting: true,
+        crop: null,
+      };
+      const DRAFT_KEY = "battle-report-draft-v1";
       const fontOptions = [
         ["", "模板字体"],
         ["微软雅黑", "微软雅黑"],
         ["PingFang SC", "苹方"],
         ["黑体", "黑体"],
+        ["冬青黑体", "冬青黑体"],
         ["宋体", "宋体"],
+        ["楷体", "楷体"],
         ["Arial", "Arial"],
         ["创客贴金刚体", "创客贴金刚体"],
       ];
+      const textStylePresets = [
+        { key: "template", label: "沿用模板", styles: {} },
+        { key: "strong", label: "醒目加粗", styles: { bold: "1" } },
+        { key: "white", label: "白字海报", styles: { color: "#ffffff", bold: "1" } },
+      ];
+      const textColorSwatches = [
+        ["#111827", "深黑"],
+        ["#ffffff", "白色"],
+        ["#d8244c", "战报红"],
+        ["#c8861d", "金色"],
+        ["#5b6cff", "品牌蓝紫"],
+        ["#167552", "成功绿"],
+      ];
       const $ = (id) => document.getElementById(id);
+
+      function previewFontFamily(font) {
+        const families = {
+          "微软雅黑": '"Microsoft YaHei", "PingFang SC", sans-serif',
+          "苹方": '"PingFang SC", sans-serif',
+          "PingFang SC": '"PingFang SC", sans-serif',
+          "黑体": '"STHeiti", "Heiti SC", "SimHei", sans-serif',
+          "冬青黑体": '"Hiragino Sans", "PingFang SC", sans-serif',
+          "宋体": '"Songti SC", "SimSun", serif',
+          "楷体": '"Kaiti SC", "KaiTi", serif',
+          "Arial": 'Arial, sans-serif',
+          "创客贴金刚体": '"创客贴金刚体", "PingFang SC", sans-serif',
+        };
+        return families[font] || font || "";
+      }
+
+      function colorInputValue(value) {
+        const color = String(value || "").trim();
+        return /^#[0-9a-f]{6}$/i.test(color) ? color : "#111827";
+      }
+
+      function hasTextStyle(targetKey) {
+        return Boolean(state.textStyles[targetKey] && Object.keys(state.textStyles[targetKey]).length);
+      }
+
+      function updateStyleEditorStatus(controls) {
+        if (!controls) return;
+        const active = hasTextStyle(controls.targetKey);
+        controls.details.classList.toggle("has-custom", active);
+        controls.badge.textContent = active ? "已自定义" : "沿用模板";
+        controls.badge.classList.toggle("active", active);
+        const color = colorInputValue(state.textStyles[controls.targetKey]?.color || controls.colorInput?.value);
+        (controls.swatches || []).forEach((button) => {
+          button.classList.toggle("active", button.dataset.color?.toLowerCase() === color.toLowerCase());
+        });
+      }
+
+      function syncStyleControls(controls) {
+        if (!controls) return;
+        const style = state.textStyles[controls.targetKey] || {};
+        controls.fontSelect.value = style.font || "";
+        controls.sizeInput.value = style.size || "";
+        controls.colorInput.value = colorInputValue(style.color);
+        controls.boldSelect.value = style.bold || "";
+        updateStyleEditorStatus(controls);
+      }
+
+      function setTextStylesForTarget(targetKey, styles, controls, message = "文案样式已调整") {
+        const cleaned = {};
+        ["font", "size", "color", "bold"].forEach((key) => {
+          const value = styles?.[key];
+          if (value) cleaned[key] = String(value);
+        });
+        if (Object.keys(cleaned).length) state.textStyles[targetKey] = cleaned;
+        else delete state.textStyles[targetKey];
+        syncStyleControls(controls);
+        refreshHotspotTextStyles();
+        scheduleGenerate(message);
+      }
+
+      function applyTextStylePreset(targetKey, preset, controls) {
+        const current = state.textStyles[targetKey] || {};
+        const next = preset.key === "template" ? {} : { ...current, ...preset.styles };
+        setTextStylesForTarget(targetKey, next, controls, `${preset.label}已应用`);
+      }
+
+      function mergedTextStyle(fieldKey) {
+        return { ...(state.textStyles.__all || {}), ...(state.textStyles[fieldKey] || {}) };
+      }
+
+      function applyHotspotTextStyle(node, fieldKey) {
+        const style = mergedTextStyle(fieldKey);
+        const fontFamily = previewFontFamily(style.font);
+        node.style.fontFamily = fontFamily || "";
+        node.style.fontSize = style.size ? `${style.size}pt` : "";
+        node.style.fontWeight = style.bold === "1" ? "900" : style.bold === "0" ? "400" : "";
+        if (style.color) node.style.setProperty("--hotspot-color", style.color);
+        else node.style.removeProperty("--hotspot-color");
+      }
+
+      function refreshHotspotTextStyles() {
+        document.querySelectorAll(".text-hotspot").forEach((hotspot) => {
+          const text = hotspot.querySelector(".hotspot-text");
+          if (text) applyHotspotTextStyle(text, hotspot.dataset.fieldKey || "");
+        });
+      }
 
       function make(tag, attrs = {}, text = "") {
         const node = document.createElement(tag);
         Object.entries(attrs).forEach(([key, value]) => node.setAttribute(key, value));
         node.textContent = text;
         return node;
+      }
+
+      function loadImage(dataUrl) {
+        return new Promise((resolve, reject) => {
+          const image = new Image();
+          image.addEventListener("load", () => resolve(image));
+          image.addEventListener("error", () => reject(new Error("图片读取失败，请重新选择。")));
+          image.src = dataUrl;
+        });
+      }
+
+      function cropOutputSize(slot) {
+        const aspect = Math.max(0.1, Number(slot.aspectRatio || 1));
+        if (aspect >= 1) return { width: 1200, height: Math.max(1, Math.round(1200 / aspect)) };
+        return { width: Math.max(1, Math.round(1200 * aspect)), height: 1200 };
+      }
+
+      function renderCropCanvas() {
+        if (!state.crop?.image) return;
+        const { image, slot } = state.crop;
+        const canvas = $("cropCanvas");
+        const context = canvas.getContext("2d");
+        const size = cropOutputSize(slot);
+        canvas.width = size.width;
+        canvas.height = size.height;
+        context.clearRect(0, 0, size.width, size.height);
+        context.fillStyle = "#f3f5fa";
+        context.fillRect(0, 0, size.width, size.height);
+
+        const zoom = Number($("cropZoom").value || 1);
+        const offsetX = Number($("cropX").value || 0) / 100;
+        const offsetY = Number($("cropY").value || 0) / 100;
+        const baseScale = Math.max(size.width / image.naturalWidth, size.height / image.naturalHeight);
+        const scale = baseScale * zoom;
+        const drawWidth = image.naturalWidth * scale;
+        const drawHeight = image.naturalHeight * scale;
+        const moveX = Math.max(0, (drawWidth - size.width) / 2);
+        const moveY = Math.max(0, (drawHeight - size.height) / 2);
+        const x = (size.width - drawWidth) / 2 + offsetX * moveX;
+        const y = (size.height - drawHeight) / 2 + offsetY * moveY;
+        context.drawImage(image, x, y, drawWidth, drawHeight);
+      }
+
+      async function openCropEditor(slot, refs) {
+        const source = state.uploadSources[slot.key];
+        if (!source?.dataUrl) return;
+        try {
+          const image = await loadImage(source.dataUrl);
+          state.crop = { slot, refs, image, source };
+          $("cropTitle").textContent = `编辑${slot.label}`;
+          $("cropHint").textContent = `目标比例 ${Number(slot.aspectRatio || 1).toFixed(2)}，应用后会替换当前上传预览。`;
+          const settings = state.cropSettings[slot.key] || {};
+          $("cropZoom").value = settings.zoom || "1";
+          $("cropX").value = settings.x || "0";
+          $("cropY").value = settings.y || "0";
+          $("cropModal").classList.add("open");
+          $("cropModal").setAttribute("aria-hidden", "false");
+          renderCropCanvas();
+        } catch (error) {
+          $("notice").textContent = error.message;
+          $("notice").className = "notice error";
+        }
+      }
+
+      function closeCropEditor() {
+        $("cropModal").classList.remove("open");
+        $("cropModal").setAttribute("aria-hidden", "true");
+        state.crop = null;
+      }
+
+      function applyCrop() {
+        if (!state.crop) return;
+        renderCropCanvas();
+        const dataUrl = $("cropCanvas").toDataURL("image/png");
+        const { slot, refs, source } = state.crop;
+        state.cropSettings[slot.key] = {
+          zoom: $("cropZoom").value || "1",
+          x: $("cropX").value || "0",
+          y: $("cropY").value || "0",
+        };
+        state.uploads[slot.key] = dataUrl;
+        refs.image.src = dataUrl;
+        refs.image.style.display = "block";
+        refs.empty.style.display = "none";
+        refs.filename.textContent = `${source.name || slot.label} · 已裁切`;
+        refs.filename.style.color = "";
+        refs.wrapper.classList.add("has-file");
+        closeCropEditor();
+        scheduleGenerate(`${slot.label}裁切已更新`);
+      }
+
+      function fieldInput(key) {
+        return Array.from($("fields").querySelectorAll("input[name], textarea[name]"))
+          .find((node) => node.name === key);
+      }
+
+      function formValues() {
+        return Object.fromEntries(new FormData($("reportForm")).entries());
+      }
+
+      function syncFieldValue(key, value) {
+        const input = fieldInput(key);
+        if (input) {
+          input.value = value;
+          updateFieldStatus(input);
+        }
+      }
+
+      function updateFieldStatus(input) {
+        if (!input) return;
+        const wrapper = input.closest(".field-control");
+        const status = wrapper?.querySelector(".field-status");
+        if (!wrapper || !status) return;
+        const field = state.selected?.fields?.find((item) => item.key === input.name);
+        const value = String(input.value || "").trim();
+        const defaultValue = String(field?.default || "").trim();
+        const filled = Boolean(value);
+        const custom = filled && value !== defaultValue;
+        wrapper.classList.toggle("filled", filled);
+        wrapper.classList.toggle("custom", custom);
+        status.className = `field-status${filled ? " filled" : ""}${custom ? " custom" : ""}`;
+        status.textContent = filled ? (custom ? "已填写" : "模板默认") : "待填写";
+      }
+
+      function refreshFieldStatuses() {
+        document.querySelectorAll("#fields input[name], #fields textarea[name]").forEach(updateFieldStatus);
+      }
+
+      function setDraftStatus(message, hasDraft = false) {
+        $("draftStatus").textContent = message;
+        $("clearDraft").style.display = hasDraft ? "inline-flex" : "none";
+      }
+
+      function draftPayload() {
+        return {
+          templateId: state.selected?.id || "",
+          values: formValues(),
+          textStyles: state.textStyles,
+          autoUpdate: state.autoUpdate,
+          savedAt: new Date().toISOString(),
+        };
+      }
+
+      function saveDraftNow(message = "草稿已保存") {
+        if (state.isBooting || !state.selected) return;
+        try {
+          const draft = draftPayload();
+          localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+          const savedAt = new Date(draft.savedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+          setDraftStatus(`${message} · ${savedAt}`, true);
+        } catch (error) {
+          setDraftStatus("草稿保存失败", false);
+          console.warn("草稿保存失败", error);
+        }
+      }
+
+      function scheduleDraftSave(message = "草稿已保存") {
+        if (state.isBooting) return;
+        window.clearTimeout(state.draftTimer);
+        state.draftTimer = window.setTimeout(() => saveDraftNow(message), 350);
+      }
+
+      function readDraft() {
+        try {
+          const raw = localStorage.getItem(DRAFT_KEY);
+          if (!raw) return null;
+          const draft = JSON.parse(raw);
+          if (!draft || typeof draft !== "object" || !draft.templateId) return null;
+          return draft;
+        } catch (error) {
+          console.warn("草稿读取失败", error);
+          return null;
+        }
+      }
+
+      function clearDraft(message = "草稿已清空") {
+        window.clearTimeout(state.draftTimer);
+        localStorage.removeItem(DRAFT_KEY);
+        setDraftStatus(message, false);
+      }
+
+      function restoreDraft() {
+        const draft = readDraft();
+        if (!draft) {
+          setDraftStatus("草稿未保存", false);
+          return false;
+        }
+        const template = state.templates.find((item) => item.id === draft.templateId);
+        if (!template) {
+          clearDraft("草稿模板不存在");
+          return false;
+        }
+        state.selected = template;
+        state.uploads = {};
+        state.uploadSources = {};
+        state.cropSettings = {};
+        state.textStyles = draft.textStyles && typeof draft.textStyles === "object" ? draft.textStyles : {};
+        state.autoUpdate = Boolean(draft.autoUpdate);
+        $("autoUpdate").checked = state.autoUpdate;
+        renderTemplates();
+        renderGlobalStyle();
+        renderUploads();
+        renderFields();
+        Object.entries(draft.values || {}).forEach(([key, value]) => syncFieldValue(key, value));
+        const uploadCount = state.selected?.uploadSlots?.length || 0;
+        $("selectedName").textContent = `${state.selected.name} · ${uploadCount} 个图片位`;
+        state.pendingChanges = true;
+        $("resultTag").textContent = "草稿待生成";
+        updateGenerateCta();
+        $("notice").textContent = "已恢复上次未生成草稿，点击“生成战报图片”后更新预览和下载文件。";
+        $("notice").className = "notice";
+        const savedAt = draft.savedAt ? new Date(draft.savedAt) : null;
+        const savedLabel = savedAt && !Number.isNaN(savedAt.getTime())
+          ? savedAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+          : "刚刚";
+        setDraftStatus(`已恢复草稿 · ${savedLabel}`, true);
+        return true;
+      }
+
+      function trimMessage(value) {
+        return String(value || "修改已保存").replace(/[。.…]+$/, "");
+      }
+
+      function generateActionLabel() {
+        return state.hasResult ? "更新战报图片" : "生成战报图片";
+      }
+
+      function updateGenerateCta() {
+        const button = $("generate");
+        const hint = $("generateHint");
+        if (!button || !hint) return;
+        document.body.classList.toggle("has-pending", state.pendingChanges);
+        button.classList.toggle("needs-generate", state.pendingChanges && !state.isGenerating);
+        hint.className = "generate-hint";
+        if (state.isGenerating) {
+          hint.textContent = state.autoUpdate ? "自动更新中" : "正在生成";
+          hint.classList.add("pending");
+          return;
+        }
+        if (state.pendingChanges) {
+          button.textContent = state.hasResult ? "更新战报图片" : "生成战报图片";
+          hint.textContent = state.autoUpdate && state.hasResult ? "将自动更新" : "有修改待生成";
+          hint.classList.add("pending");
+          return;
+        }
+        if (state.hasResult) {
+          button.textContent = "重新生成";
+          hint.textContent = "当前结果已同步";
+          hint.classList.add("ok");
+          return;
+        }
+        button.textContent = "生成战报图片";
+        hint.textContent = "填好信息后生成";
+      }
+
+      function setPendingChanges(message) {
+        state.pendingChanges = true;
+        window.clearTimeout(state.autoTimer);
+        const actionLabel = generateActionLabel();
+        $("notice").textContent = state.imageTextDirty && state.hasResult
+          ? `${trimMessage(message)}，已同步到当前预览；可下载当前预览 PNG，或点击“${actionLabel}”更新 PPTX。`
+          : `${trimMessage(message)}，点击“${actionLabel}”后更新预览和下载文件。`;
+        $("notice").className = "notice";
+        $("resultTag").textContent = state.hasResult ? "有修改待生成" : "待生成";
+        updateGenerateCta();
+        scheduleDraftSave("草稿已保存");
+      }
+
+      function scheduleGenerate(message) {
+        if (!state.selected) return;
+        if (!state.hasResult || !state.autoUpdate) {
+          setPendingChanges(message);
+          return;
+        }
+        state.pendingChanges = true;
+        window.clearTimeout(state.autoTimer);
+        $("notice").textContent = `${trimMessage(message)}，正在更新结果。`;
+        $("notice").className = "notice";
+        updateGenerateCta();
+        scheduleDraftSave("草稿已保存");
+        state.autoTimer = window.setTimeout(() => generateReport({ auto: true }), 850);
+      }
+
+      function updateImageDownloadLabel() {
+        const link = $("imageDownload");
+        link.textContent = state.imageTextDirty ? "下载当前预览 PNG" : "下载 PNG";
+        link.title = state.imageTextDirty
+          ? "包含图片上直接修改的文字，不会自动重新生成 PPTX"
+          : "";
+      }
+
+      function refreshImageTextDirty() {
+        state.imageTextDirty = state.editorFields.some((field) => field.dirty);
+        updateImageDownloadLabel();
+      }
+
+      function markEditorFieldDirty(field, value) {
+        const nextValue = String(value || "");
+        field.value = nextValue;
+        field.dirty = nextValue !== String(field.originalValue || "");
+      }
+
+      function syncEditorPreviewValue(key, value, { updateDom = true } = {}) {
+        const matched = state.editorFields.filter((field) => field.key === key);
+        matched.forEach((field) => markEditorFieldDirty(field, value));
+        if (updateDom) {
+          document.querySelectorAll(`.text-hotspot[data-field-key="${CSS.escape(key)}"]`).forEach((hotspot) => {
+            const field = matched.find((item) => String(item.key) === hotspot.dataset.fieldKey);
+            const text = hotspot.querySelector(".hotspot-text");
+            if (text && text.textContent !== String(value || "")) text.textContent = String(value || "");
+            hotspot.classList.toggle("dirty", Boolean(field?.dirty));
+          });
+        }
+        refreshImageTextDirty();
+      }
+
+      function markImageTextPending() {
+        state.pendingChanges = true;
+        window.clearTimeout(state.autoTimer);
+        $("notice").textContent = `已在当前预览上修改文字；可先下载当前预览 PNG，或点击“${generateActionLabel()}”同步到 PPTX。`;
+        $("notice").className = "notice";
+        $("resultTag").textContent = state.hasResult ? "图片已本地修改" : "待生成";
+        updateGenerateCta();
+        scheduleDraftSave("草稿已保存");
+      }
+
+      function renderImageHotspots() {
+        const layer = $("overlayLayer");
+        layer.replaceChildren();
+        if (!state.editorFields.length) return;
+        state.editorFields.forEach((field) => {
+          const hotspot = make("div", { class: `text-hotspot${field.dirty ? " dirty" : ""}`, title: `修改${field.label}` });
+          hotspot.dataset.fieldKey = field.key;
+          hotspot.style.left = `${Math.max(0, field.x * 100)}%`;
+          hotspot.style.top = `${Math.max(0, field.y * 100)}%`;
+          hotspot.style.width = `${Math.min(100, Math.max(3, field.width * 100))}%`;
+          hotspot.style.height = `${Math.min(100, Math.max(2, field.height * 100))}%`;
+
+          const label = make("span", { class: "hotspot-label" }, field.label);
+          const text = make("div", { class: "hotspot-text", contenteditable: "true", spellcheck: "false" }, field.value || "");
+          applyHotspotTextStyle(text, field.key);
+          text.addEventListener("focus", () => hotspot.classList.add("editing"));
+          text.addEventListener("input", () => {
+            const nextValue = text.textContent || "";
+            markEditorFieldDirty(field, nextValue);
+            hotspot.classList.toggle("dirty", field.dirty);
+            syncFieldValue(field.key, nextValue);
+            refreshImageTextDirty();
+            markImageTextPending();
+          });
+          text.addEventListener("keydown", (event) => {
+            if (event.key === "Enter" && !event.shiftKey && field.kind !== "textarea") {
+              event.preventDefault();
+              text.blur();
+            }
+          });
+          text.addEventListener("blur", () => {
+            hotspot.classList.remove("editing");
+          });
+          hotspot.append(label, text);
+          layer.append(hotspot);
+        });
+      }
+
+      function historySummary(values) {
+        const preferred = ["name", "company", "amount", "headline", "product"];
+        const picked = preferred
+          .map((key) => values[key])
+          .filter((value) => String(value || "").trim())
+          .slice(0, 2);
+        if (picked.length) return picked.join(" · ");
+        const fallback = Object.values(values).find((value) => String(value || "").trim());
+        return fallback ? String(fallback) : "未填写文案";
+      }
+
+      function normalizeHistoryRecord(item) {
+        const values = item?.values && typeof item.values === "object" ? item.values : {};
+        const textStyles = item?.textStyles && typeof item.textStyles === "object" ? item.textStyles : {};
+        const createdAt = item?.createdAt ? new Date(item.createdAt) : new Date();
+        const safeDate = Number.isNaN(createdAt.getTime()) ? new Date() : createdAt;
+        return {
+          id: String(item?.id || `${safeDate.getTime()}-${Math.random().toString(36).slice(2, 7)}`),
+          templateId: String(item?.templateId || ""),
+          templateName: String(item?.templateName || "历史生成"),
+          imageUrl: String(item?.imageUrl || ""),
+          pptxUrl: String(item?.pptxUrl || ""),
+          warning: String(item?.warning || ""),
+          uploadCount: Number(item?.uploadCount || 0),
+          photoReplaced: Boolean(item?.photoReplaced),
+          editorFields: Array.isArray(item?.editorFields) ? item.editorFields : [],
+          values,
+          textStyles,
+          summary: String(item?.summary || historySummary(values)),
+          createdAt: safeDate.toISOString(),
+          createdLabel: safeDate.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" }),
+        };
+      }
+
+      function createResultRecord(data) {
+        if (data.historyRecord) {
+          return normalizeHistoryRecord({
+            ...data.historyRecord,
+            values: data.historyRecord.values || formValues(),
+            textStyles: data.historyRecord.textStyles || state.textStyles,
+            editorFields: data.historyRecord.editorFields || data.editorFields || [],
+          });
+        }
+        const values = formValues();
+        const createdAt = new Date();
+        return normalizeHistoryRecord({
+          id: `${createdAt.getTime()}-${Math.random().toString(36).slice(2, 7)}`,
+          templateId: state.selected?.id || "",
+          templateName: state.selected?.name || "未选择模板",
+          imageUrl: data.imageUrl || "",
+          pptxUrl: data.pptxUrl || "",
+          warning: data.warning || "",
+          uploadCount: data.uploadCount || 0,
+          photoReplaced: Boolean(data.photoReplaced),
+          editorFields: data.editorFields || [],
+          values,
+          textStyles: state.textStyles,
+          summary: historySummary(values),
+          createdAt: createdAt.toISOString(),
+        });
+      }
+
+      function restoreResultForm(result) {
+        const template = state.templates.find((item) => item.id === result.templateId);
+        if (!template) return;
+        state.selected = template;
+        state.uploads = {};
+        state.uploadSources = {};
+        state.cropSettings = {};
+        state.textStyles = result.textStyles || {};
+        renderTemplates();
+        renderGlobalStyle();
+        renderUploads();
+        renderFields();
+        Object.entries(result.values || {}).forEach(([key, value]) => syncFieldValue(key, value));
+        const uploadCount = state.selected?.uploadSlots?.length || 0;
+        $("selectedName").textContent = `${state.selected.name} · ${uploadCount} 个图片位`;
+      }
+
+      function activateResult(result, { fromHistory = false, restoreForm = false } = {}) {
+        if (restoreForm) restoreResultForm(result);
+        state.activeResultId = result.id;
+        state.editorFields = (result.editorFields || []).map((field) => ({
+          ...field,
+          originalValue: String(field.value || ""),
+          value: String(field.value || ""),
+          dirty: false,
+        }));
+        state.imageTextDirty = false;
+        $("pptxDownload").href = result.pptxUrl;
+        $("pptxDownload").style.display = result.pptxUrl ? "block" : "none";
+        if (result.imageUrl) {
+          $("preview").src = `${result.imageUrl}?t=${Date.now()}`;
+          $("editorWrap").style.display = "block";
+          $("previewTip").style.display = "block";
+          $("placeholder").style.display = "none";
+          $("imageDownload").href = result.imageUrl;
+          $("imageDownload").style.display = "block";
+          updateImageDownloadLabel();
+          $("resultTag").textContent = fromHistory && state.pendingChanges ? "查看历史" : "生成完成";
+          renderImageHotspots();
+        } else {
+          $("editorWrap").style.display = "none";
+          $("previewTip").style.display = "none";
+          $("overlayLayer").replaceChildren();
+          $("placeholder").style.display = "block";
+          $("placeholder").textContent = "PPTX 已生成。图片暂未自动导出，请根据下方提示处理。";
+          $("imageDownload").style.display = "none";
+          updateImageDownloadLabel();
+          $("resultTag").textContent = "已生成 PPTX";
+        }
+        $("downloads").style.display = "grid";
+        state.hasResult = true;
+        if (!fromHistory) state.pendingChanges = false;
+        updateGenerateCta();
+        renderHistory();
+      }
+
+      function historyMatchesQuery(item) {
+        const query = state.historyQuery.trim().toLowerCase();
+        if (!query) return true;
+        const valueText = Object.values(item.values || {}).join(" ");
+        return [
+          item.templateName,
+          item.summary,
+          item.createdLabel,
+          item.createdAt,
+          valueText,
+        ].join(" ").toLowerCase().includes(query);
+      }
+
+      function clearResultPreview() {
+        state.activeResultId = "";
+        state.editorFields = [];
+        state.imageTextDirty = false;
+        state.hasResult = false;
+        $("editorWrap").style.display = "none";
+        $("previewTip").style.display = "none";
+        $("overlayLayer").replaceChildren();
+        $("downloads").style.display = "none";
+        updateImageDownloadLabel();
+        $("placeholder").style.display = "block";
+        $("placeholder").textContent = "左侧填好内容并生成。完成后可直接点海报上的文字修改，再下载 PNG 或 PPTX。";
+        $("resultTag").textContent = "等待生成";
+        state.pendingChanges = false;
+        updateGenerateCta();
+      }
+
+      function renderHistory() {
+        $("history").style.display = state.history.length ? "block" : "none";
+        $("historyList").replaceChildren();
+        const items = state.history.filter(historyMatchesQuery);
+        if (!items.length) {
+          $("historyList").append(make("div", { class: "history-empty" }, state.historyQuery ? "没有匹配的历史记录" : "暂无生成历史"));
+          return;
+        }
+        items.forEach((item) => {
+          const row = make("div", { class: `history-item${item.id === state.activeResultId ? " active" : ""}` });
+          const button = make("button", { type: "button", class: "history-main" });
+          const thumb = make("div", { class: "history-thumb" });
+          if (item.imageUrl) thumb.append(make("img", { src: `${item.imageUrl}?t=${encodeURIComponent(item.id)}`, alt: `${item.templateName}预览` }));
+          const copy = make("div", { class: "history-copy" });
+          copy.append(make("strong", {}, item.templateName));
+          copy.append(make("span", {}, `${item.createdLabel} · ${item.summary}`));
+          const status = make("span", { class: "history-status" }, item.id === state.activeResultId ? "当前" : "查看");
+          button.append(thumb, copy, status);
+          button.addEventListener("click", () => {
+            activateResult(item, { fromHistory: true, restoreForm: true });
+            $("notice").textContent = `正在查看 ${item.createdLabel} 版本，下载按钮已切换到该版本。`;
+            $("notice").className = "notice";
+          });
+          const deleteButton = make("button", { type: "button", class: "history-delete", title: "删除这条历史" }, "×");
+          deleteButton.addEventListener("click", () => deleteHistoryItem(item));
+          row.append(button, deleteButton);
+          $("historyList").append(row);
+        });
+      }
+
+      function showGeneratedResult(data) {
+        const result = createResultRecord(data);
+        state.history = [result, ...state.history].slice(0, 8);
+        activateResult(result);
+      }
+
+      async function loadHistory({ activateLatest = false } = {}) {
+        try {
+          const response = await fetch(`/api/history?limit=12&t=${Date.now()}`);
+          const data = await response.json();
+          if (!response.ok) throw new Error(data.error || "历史读取失败");
+          state.history = (data.items || []).map(normalizeHistoryRecord);
+          renderHistory();
+          if (activateLatest && state.history.length && !state.hasResult) {
+            activateResult(state.history[0], { fromHistory: true, restoreForm: true });
+            $("notice").textContent = "已恢复最近一次生成结果，下载按钮已切换到该版本。";
+            $("notice").className = "notice";
+          }
+        } catch (error) {
+          console.warn("历史读取失败", error);
+        }
+      }
+
+      async function deleteHistoryItem(item) {
+        if (!window.confirm(`删除 ${item.createdLabel} 的生成记录？`)) return;
+        try {
+          const response = await fetch(`/api/history/${encodeURIComponent(item.id)}`, { method: "DELETE" });
+          const data = await response.json();
+          if (!response.ok) throw new Error(data.error || "删除失败");
+          state.history = (data.items || []).map(normalizeHistoryRecord);
+          if (state.activeResultId === item.id) {
+            const next = state.history.find(historyMatchesQuery) || state.history[0];
+            if (next) activateResult(next, { fromHistory: true, restoreForm: true });
+            else clearResultPreview();
+          } else {
+            renderHistory();
+          }
+          $("notice").textContent = "历史记录已删除。";
+          $("notice").className = "notice";
+        } catch (error) {
+          $("notice").textContent = error.message;
+          $("notice").className = "notice error";
+        }
       }
 
       function renderTemplates() {
@@ -721,68 +2172,110 @@
         if (!state.selected) return;
         state.selected.fields.forEach((field) => {
           const wrapper = make("div", { class: `field-control${field.kind === "textarea" ? " full" : ""}` });
-          wrapper.append(make("div", { class: "field-title" }, field.label));
+          const title = make("div", { class: "field-title" });
+          title.append(make("span", { class: "field-label" }, field.label), make("span", { class: "field-status" }, "待填写"));
+          wrapper.append(title);
           const input = field.kind === "textarea"
             ? make("textarea", { name: field.key, placeholder: field.hint || field.label })
             : make("input", { name: field.key, type: "text", placeholder: field.hint || field.label });
           input.value = field.default || "";
-          wrapper.append(input, renderStyleEditor(field.key, "单独调整这个文案"));
+          input.addEventListener("input", () => {
+            updateFieldStatus(input);
+            syncEditorPreviewValue(field.key, input.value);
+            scheduleGenerate("文案已调整");
+          });
+          wrapper.append(input, renderStyleEditor(field.key, "更多样式"));
           $("fields").append(wrapper);
+          updateFieldStatus(input);
         });
       }
 
       function renderGlobalStyle() {
-        $("globalStyle").replaceChildren(renderStyleEditor("__all", "全部文案样式", true));
+        const intro = make("div", { class: "style-intro" });
+        intro.append(
+          make("strong", {}, "文案设计"),
+          make("span", {}, "默认跟随模板；只有觉得不够清楚时，再点一个快捷样式。")
+        );
+        $("globalStyle").replaceChildren(intro, renderStyleEditor("__all", "快捷样式", true));
       }
 
       function renderStyleEditor(targetKey, summaryText, open = false) {
         const details = make("details", { class: "style-editor" });
         if (open) details.open = true;
-        details.append(make("summary", {}, summaryText));
+        const summary = make("summary");
+        const summaryWrap = make("span", { class: "style-summary" });
+        const badge = make("span", { class: "style-badge" });
+        summaryWrap.append(make("span", {}, summaryText), badge);
+        summary.append(summaryWrap);
+        details.append(summary);
+        details.append(make(
+          "p",
+          { class: "style-helper" },
+          targetKey === "__all"
+            ? "默认已经按模板排版；这里只保留最常用的 3 个选择。"
+            : "这个入口平时会隐藏；只在某个字段需要单独突出时再用。"
+        ));
+
         const grid = make("div", { class: "style-grid" });
         const fontLabel = make("label", {}, "字体");
         const fontSelect = make("select");
         fontOptions.forEach(([value, label]) => fontSelect.append(make("option", { value }, label)));
-        fontSelect.value = state.textStyles[targetKey]?.font || "";
-        fontSelect.addEventListener("change", () => updateTextStyle(targetKey, "font", fontSelect.value));
         fontLabel.append(fontSelect);
 
         const sizeLabel = make("label", {}, "字号 pt");
         const sizeInput = make("input", { type: "number", min: "6", max: "300", step: "1", placeholder: "自动" });
-        sizeInput.value = state.textStyles[targetKey]?.size || "";
-        sizeInput.addEventListener("input", () => updateTextStyle(targetKey, "size", sizeInput.value));
         sizeLabel.append(sizeInput);
 
         const colorLabel = make("label", {}, "颜色");
-        const colorInput = make("input", { type: "color", value: state.textStyles[targetKey]?.color || "#111827" });
-        colorInput.addEventListener("input", () => updateTextStyle(targetKey, "color", colorInput.value));
-        colorLabel.append(colorInput);
+        const colorInput = make("input", { type: "color" });
+        const swatches = [];
+        const swatchRow = make("div", { class: "color-swatches" });
+        textColorSwatches.forEach(([color, label]) => {
+          const swatch = make("button", { type: "button", class: "color-swatch", title: label, "aria-label": `设置为${label}` });
+          swatch.dataset.color = color;
+          swatch.style.setProperty("--swatch-color", color);
+          swatch.addEventListener("click", () => updateTextStyle(targetKey, "color", color, controls));
+          swatches.push(swatch);
+          swatchRow.append(swatch);
+        });
+        colorLabel.append(colorInput, swatchRow);
 
         const boldLabel = make("label", {}, "粗细");
         const boldSelect = make("select");
         [["", "模板粗细"], ["1", "加粗"], ["0", "不加粗"]].forEach(([value, label]) => boldSelect.append(make("option", { value }, label)));
-        boldSelect.value = state.textStyles[targetKey]?.bold || "";
-        boldSelect.addEventListener("change", () => updateTextStyle(targetKey, "bold", boldSelect.value));
         boldLabel.append(boldSelect);
 
         const reset = make("button", { type: "button", class: "secondary style-reset" }, "恢复默认");
-        reset.addEventListener("click", () => {
-          delete state.textStyles[targetKey];
-          fontSelect.value = "";
-          sizeInput.value = "";
-          colorInput.value = "#111827";
-          boldSelect.value = "";
+        const controls = { targetKey, details, badge, fontSelect, sizeInput, colorInput, boldSelect, swatches };
+        fontSelect.addEventListener("change", () => updateTextStyle(targetKey, "font", fontSelect.value, controls));
+        sizeInput.addEventListener("input", () => updateTextStyle(targetKey, "size", sizeInput.value, controls));
+        colorInput.addEventListener("input", () => updateTextStyle(targetKey, "color", colorInput.value, controls));
+        boldSelect.addEventListener("change", () => updateTextStyle(targetKey, "bold", boldSelect.value, controls));
+        reset.addEventListener("click", () => setTextStylesForTarget(targetKey, {}, controls, "文案样式已恢复"));
+
+        const presets = make("div", { class: "style-presets" });
+        textStylePresets.forEach((preset) => {
+          const button = make("button", { type: "button", class: "style-preset" }, preset.label);
+          button.addEventListener("click", () => applyTextStylePreset(targetKey, preset, controls));
+          presets.append(button);
         });
+        const advanced = make("details", { class: "advanced-style" });
+        advanced.append(make("summary", {}, "高级调整：字体 / 字号 / 颜色 / 粗细"));
         grid.append(fontLabel, sizeLabel, colorLabel, boldLabel, reset);
-        details.append(grid);
+        advanced.append(grid);
+        details.append(presets, advanced);
+        syncStyleControls(controls);
         return details;
       }
 
-      function updateTextStyle(targetKey, key, value) {
+      function updateTextStyle(targetKey, key, value, controls = null) {
         state.textStyles[targetKey] = state.textStyles[targetKey] || {};
-        if (value) state.textStyles[targetKey][key] = value;
+        if (value) state.textStyles[targetKey][key] = String(value);
         else delete state.textStyles[targetKey][key];
         if (!Object.keys(state.textStyles[targetKey]).length) delete state.textStyles[targetKey];
+        syncStyleControls(controls);
+        refreshHotspotTextStyles();
+        scheduleGenerate("文案样式已调整");
       }
 
       function renderUploads() {
@@ -799,12 +2292,13 @@
           title.append(make("h3", {}, slot.label));
           title.append(make("span", { class: "slot-badge" }, slot.key.startsWith("gallery") ? "白框图" : "人物图"));
           copy.append(title);
-          copy.append(make("span", { class: "muted tiny" }, "图片会等比缩放并居中裁切，不会拉伸变形。跨平台推荐 PNG、JPG。"));
+          copy.append(make("span", { class: "muted tiny" }, "图片会按模板比例裁切，可上传后手动调整画面位置。跨平台推荐 PNG、JPG。"));
           const inputId = `upload-${slot.key}`;
           const actions = make("div", { class: "upload-actions" });
           actions.append(make("label", { class: "file-button", for: inputId }, "选择图片"));
+          const cropButton = make("button", { class: "crop-upload", type: "button" }, "编辑裁切");
           const clearButton = make("button", { class: "clear-upload", type: "button" }, "清除");
-          actions.append(clearButton);
+          actions.append(cropButton, clearButton);
           const input = make("input", {
             id: inputId,
             class: "photo-file",
@@ -812,8 +2306,12 @@
             accept: "image/png,image/jpeg,image/webp,image/heic,image/heif",
           });
           const filename = make("span", { class: "muted tiny" }, "单张最大 12MB");
+          const refs = { image, empty, filename, wrapper };
+          cropButton.addEventListener("click", () => openCropEditor(slot, refs));
           clearButton.addEventListener("click", () => {
             delete state.uploads[slot.key];
+            delete state.uploadSources[slot.key];
+            delete state.cropSettings[slot.key];
             input.value = "";
             image.removeAttribute("src");
             image.style.display = "none";
@@ -821,6 +2319,7 @@
             filename.textContent = "单张最大 12MB";
             filename.style.color = "";
             wrapper.classList.remove("has-file");
+            scheduleGenerate(`${slot.label}已清除`);
           });
           input.addEventListener("change", (event) => {
             const file = event.target.files?.[0];
@@ -835,13 +2334,17 @@
             }
             const reader = new FileReader();
             reader.addEventListener("load", () => {
-              state.uploads[slot.key] = String(reader.result || "");
+              const dataUrl = String(reader.result || "");
+              delete state.cropSettings[slot.key];
+              state.uploadSources[slot.key] = { dataUrl, name: file.name, size: file.size };
+              state.uploads[slot.key] = dataUrl;
               image.src = state.uploads[slot.key];
               image.style.display = "block";
               empty.style.display = "none";
-              filename.textContent = `${file.name} · ${formatBytes(file.size)}`;
+              filename.textContent = `${file.name} · ${formatBytes(file.size)} · 可裁切`;
               filename.style.color = "";
               wrapper.classList.add("has-file");
+              scheduleGenerate(`${slot.label}已更新`);
             });
             reader.readAsDataURL(file);
           });
@@ -859,7 +2362,24 @@
       function selectTemplate(id) {
         if (state.selected?.id !== id) {
           state.uploads = {};
+          state.uploadSources = {};
+          state.cropSettings = {};
           state.textStyles = {};
+          state.editorFields = [];
+          state.imageTextDirty = false;
+          state.hasResult = false;
+          state.pendingChanges = false;
+          state.activeResultId = "";
+          window.clearTimeout(state.autoTimer);
+          $("editorWrap").style.display = "none";
+          $("overlayLayer").replaceChildren();
+          $("downloads").style.display = "none";
+          updateImageDownloadLabel();
+          $("placeholder").style.display = "block";
+          $("placeholder").textContent = "左侧填好内容并生成。完成后可直接点海报上的文字修改，再下载 PNG 或 PPTX。";
+          $("resultTag").textContent = "等待生成";
+          updateGenerateCta();
+          renderHistory();
         }
         state.selected = state.templates.find((template) => template.id === id);
         renderTemplates();
@@ -868,6 +2388,23 @@
         renderFields();
         const uploadCount = state.selected?.uploadSlots?.length || 0;
         $("selectedName").textContent = state.selected ? `${state.selected.name} · ${uploadCount} 个图片位` : "";
+        scheduleDraftSave("模板选择已保存");
+      }
+
+      function renderShareBanner(urls) {
+        const banner = $("shareBanner");
+        banner.replaceChildren();
+        if (urls.length) {
+          banner.append(make("strong", {}, "共享已开启"));
+          banner.append(document.createTextNode("同一局域网内同事可直接访问"));
+          urls.forEach((url, index) => {
+            if (index) banner.append(make("span", { class: "share-separator" }, "或"));
+            banner.append(make("a", { href: url, target: "_blank", rel: "noopener" }, url));
+          });
+        } else {
+          banner.textContent = "共享已开启：暂未识别到局域网地址，请确认当前电脑已连接公司 Wi-Fi 或内网。";
+        }
+        banner.style.display = "flex";
       }
 
       async function loadRuntimeConfig() {
@@ -875,14 +2412,69 @@
           const response = await fetch(`/api/config?t=${Date.now()}`);
           const data = await response.json();
           if (!data.shareMode) return;
-          $("runMode").textContent = "局域网共享 · 文件仅在本机处理";
-          const urls = data.shareUrls || [];
-          $("shareBanner").textContent = urls.length
-            ? `共享模式已开启。同一局域网内的同事可访问：${urls.join("  ·  ")}`
-            : "共享模式已开启。暂未识别到局域网地址，请检查当前电脑的网络连接。";
-          $("shareBanner").style.display = "block";
+          $("runMode").textContent = "局域网共享中 · 文件本机处理";
+          renderShareBanner(data.shareUrls || []);
         } catch (error) {
           console.warn("运行模式读取失败", error);
+        }
+      }
+
+      function levelClass(level) {
+        return ["ok", "warn", "error"].includes(level) ? level : "warn";
+      }
+
+      function usageTextForDiagnostics(data) {
+        const system = data?.system?.name || "";
+        const method = data?.png?.method || "";
+        if (system === "Darwin" && method === "Keynote") {
+          return "选择模板、上传图片、补全文案后，点击“生成战报图片”。本机会自动调用 Keynote 导出 PNG；首次出现自动化权限提示时请选择“允许”。";
+        }
+        if (system === "Darwin" && method === "Quick Look") {
+          return "选择模板、上传图片、补全文案后，点击“生成战报图片”。当前使用系统快速预览导出 PNG；如需更稳定的版式效果，建议安装 Keynote。";
+        }
+        if (system === "Windows") {
+          return "Windows 使用前请先安装 Python 和桌面版 PowerPoint。填写完成后点击“生成战报图片”，工具会调用 PowerPoint 导出 PNG；没有 PowerPoint 时仍会生成 PPTX。";
+        }
+        if (data?.png?.available) {
+          return "选择模板、上传图片、补全文案后，点击“生成战报图片”。生成完成后可在右侧预览并下载 PNG 或 PPTX。";
+        }
+        const actions = Array.isArray(data?.actions) ? data.actions.filter(Boolean) : [];
+        return actions[0] || "选择模板并填写文案后，可先生成 PPTX；如果 PNG 暂未自动导出，可打开 PPTX 手动导出图片。";
+      }
+
+      function renderDiagnostics(data) {
+        const panel = $("diagnosticsPanel");
+        const level = levelClass(data?.png?.level || data?.pptx?.level || "warn");
+        const method = data?.png?.method || "";
+        panel.className = `diagnostics-panel ${level}`;
+        panel.style.display = "grid";
+        $("diagTitle").textContent = "使用说明";
+        $("diagText").textContent = usageTextForDiagnostics(data);
+        $("diagChecks").replaceChildren();
+        [
+          ["选择模板", "ok"],
+          ["上传图片", "ok"],
+          ["补全文案", "ok"],
+          [method ? `${method} 导出` : "生成下载", level],
+        ].forEach(([label, itemLevel]) => {
+          $("diagChecks").append(make("span", { class: `diag-check ${levelClass(itemLevel)}` }, label));
+        });
+      }
+
+      async function loadDiagnostics() {
+        try {
+          const response = await fetch(`/api/diagnostics?t=${Date.now()}`);
+          const data = await response.json();
+          if (!response.ok) throw new Error(data.error || "环境诊断失败");
+          state.diagnostics = data;
+          renderDiagnostics(data);
+        } catch (error) {
+          $("diagnosticsPanel").className = "diagnostics-panel error";
+          $("diagnosticsPanel").style.display = "grid";
+          $("diagTitle").textContent = "导出能力读取失败";
+          $("diagText").textContent = error.message;
+          $("diagChecks").replaceChildren();
+          console.warn("导出能力读取失败", error);
         }
       }
 
@@ -919,18 +2511,138 @@
         }
       }
 
-      $("refreshTemplates").addEventListener("click", () => loadTemplates({ announce: true }));
+      function canvasTextLines(ctx, text, maxWidth) {
+        const lines = [];
+        String(text || "").split(/\n/).forEach((paragraph) => {
+          let line = "";
+          [...paragraph].forEach((char) => {
+            const nextLine = line + char;
+            if (line && ctx.measureText(nextLine).width > maxWidth) {
+              lines.push(line);
+              line = char;
+            } else {
+              line = nextLine;
+            }
+          });
+          lines.push(line);
+        });
+        return lines;
+      }
 
-      $("reportForm").addEventListener("submit", async (event) => {
+      async function downloadEditedPreview() {
+        const image = $("preview");
+        if (!image.src || !state.imageTextDirty) return;
+        try {
+          if (image.decode) await image.decode();
+        } catch (error) {
+          console.warn("预览图解码失败，继续尝试导出", error);
+        }
+        const canvas = document.createElement("canvas");
+        canvas.width = image.naturalWidth || image.clientWidth;
+        canvas.height = image.naturalHeight || image.clientHeight;
+        const ctx = canvas.getContext("2d");
+        if (!ctx || !canvas.width || !canvas.height) return;
+        ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+        const imageRect = image.getBoundingClientRect();
+        const scaleX = canvas.width / imageRect.width;
+        const scaleY = canvas.height / imageRect.height;
+        document.querySelectorAll(".text-hotspot.dirty").forEach((hotspot) => {
+          const text = hotspot.querySelector(".hotspot-text");
+          if (!text) return;
+          const rect = hotspot.getBoundingClientRect();
+          const styles = window.getComputedStyle(text);
+          const x = (rect.left - imageRect.left) * scaleX;
+          const y = (rect.top - imageRect.top) * scaleY;
+          const width = rect.width * scaleX;
+          const height = rect.height * scaleY;
+          const paddingLeft = parseFloat(styles.paddingLeft || "0") * scaleX;
+          const paddingTop = parseFloat(styles.paddingTop || "0") * scaleY;
+          const paddingRight = parseFloat(styles.paddingRight || "0") * scaleX;
+          const fontSize = parseFloat(styles.fontSize || "16") * scaleY;
+          const lineHeight = (parseFloat(styles.lineHeight || "0") || fontSize * 1.22) * scaleY;
+
+          ctx.save();
+          ctx.fillStyle = "rgba(255, 255, 255, 0.88)";
+          ctx.fillRect(x, y, width, height);
+          ctx.beginPath();
+          ctx.rect(x, y, width, height);
+          ctx.clip();
+          ctx.fillStyle = styles.color || "#111827";
+          ctx.font = `${styles.fontWeight || "700"} ${fontSize}px ${styles.fontFamily || "sans-serif"}`;
+          ctx.textBaseline = "top";
+          const maxTextWidth = Math.max(1, width - paddingLeft - paddingRight);
+          canvasTextLines(ctx, text.textContent || "", maxTextWidth).forEach((line, index) => {
+            const lineY = y + paddingTop + index * lineHeight;
+            if (lineY < y + height) ctx.fillText(line, x + paddingLeft, lineY);
+          });
+          ctx.restore();
+        });
+
+        const link = document.createElement("a");
+        const baseName = state.selected?.name || state.activeResultId || "战报";
+        link.download = `${baseName}-当前预览.png`;
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+      }
+
+      $("refreshTemplates").addEventListener("click", () => loadTemplates({ announce: true }));
+      $("autoUpdate").addEventListener("change", (event) => {
+        state.autoUpdate = event.target.checked;
+        scheduleDraftSave("生成设置已保存");
+        if (state.autoUpdate && state.pendingChanges && state.hasResult) {
+          scheduleGenerate("自动更新已开启");
+        } else if (!state.autoUpdate) {
+          window.clearTimeout(state.autoTimer);
+          if (state.pendingChanges) setPendingChanges("自动更新已关闭，当前修改已保留");
+        }
+      });
+      $("refreshHistory").addEventListener("click", () => loadHistory());
+      $("historySearch").addEventListener("input", (event) => {
+        state.historyQuery = event.target.value;
+        renderHistory();
+      });
+      $("clearDraft").addEventListener("click", () => clearDraft());
+      $("scrollPreview").addEventListener("click", () => {
+        document.querySelector(".result")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+      ["cropZoom", "cropX", "cropY"].forEach((id) => {
+        $(id).addEventListener("input", renderCropCanvas);
+      });
+      $("cropReset").addEventListener("click", () => {
+        $("cropZoom").value = "1";
+        $("cropX").value = "0";
+        $("cropY").value = "0";
+        renderCropCanvas();
+      });
+      $("cropClose").addEventListener("click", closeCropEditor);
+      $("cropApply").addEventListener("click", applyCrop);
+      $("cropModal").addEventListener("click", (event) => {
+        if (event.target.id === "cropModal") closeCropEditor();
+      });
+      $("imageDownload").addEventListener("click", (event) => {
+        if (!state.imageTextDirty) return;
         event.preventDefault();
+        downloadEditedPreview();
+      });
+
+      async function generateReport({ auto = false, immediate = false } = {}) {
         if (!state.selected) return;
+        if (state.isGenerating) {
+          state.pendingGenerate = true;
+          return;
+        }
+        window.clearTimeout(state.autoTimer);
         const button = $("generate");
-        const values = Object.fromEntries(new FormData(event.target).entries());
+        const serial = ++state.generateSerial;
+        const values = formValues();
+        state.isGenerating = true;
         button.disabled = true;
-        button.textContent = "正在生成…";
+        button.textContent = auto ? "正在更新…" : "正在生成…";
         document.body.classList.add("is-generating");
-        $("resultTag").textContent = "正在转图";
-        $("notice").textContent = "正在替换模板内容并导出图片，通常需要几秒钟。";
+        updateGenerateCta();
+        $("resultTag").textContent = auto ? "正在更新" : "正在转图";
+        $("notice").textContent = auto ? "正在按最新文案重新导出图片。" : "正在替换模板内容并导出图片，通常需要几秒钟。";
         $("notice").className = "notice";
         try {
           const response = await fetch("/api/generate", {
@@ -940,38 +2652,44 @@
           });
           const data = await response.json();
           if (!response.ok) throw new Error(data.error || "生成失败");
-          $("pptxDownload").href = data.pptxUrl;
-          $("pptxDownload").style.display = "block";
-          if (data.imageUrl) {
-            $("preview").src = `${data.imageUrl}?t=${Date.now()}`;
-            $("preview").style.display = "block";
-            $("placeholder").style.display = "none";
-            $("imageDownload").href = data.imageUrl;
-            $("imageDownload").style.display = "block";
-            $("resultTag").textContent = "生成完成";
-          } else {
-            $("preview").style.display = "none";
-            $("placeholder").style.display = "block";
-            $("placeholder").textContent = "PPTX 已生成。图片暂未自动导出，请根据下方提示处理。";
-            $("imageDownload").style.display = "none";
-            $("resultTag").textContent = "已生成 PPTX";
-          }
-          $("downloads").style.display = "grid";
+          if (serial !== state.generateSerial) return;
+          showGeneratedResult(data);
+          clearDraft("当前内容已生成");
           const photoMessage = data.photoReplaced ? `已替换 ${data.uploadCount || 1} 张图片。` : "";
-          $("notice").textContent = data.warning || `${photoMessage}战报图片和 PPTX 已生成，可以直接下载。`;
+          $("notice").textContent = data.warning || `${photoMessage}战报图片和 PPTX 已按最新文案生成。`;
         } catch (error) {
           $("notice").textContent = error.message;
           $("notice").className = "notice error";
           $("resultTag").textContent = "生成失败";
         } finally {
+          state.isGenerating = false;
           button.disabled = false;
-          button.textContent = "生成战报图片";
           document.body.classList.remove("is-generating");
+          updateGenerateCta();
+          if (state.pendingGenerate) {
+            state.pendingGenerate = false;
+            scheduleGenerate("检测到新的调整");
+          }
         }
+      }
+
+      $("reportForm").addEventListener("submit", (event) => {
+        event.preventDefault();
+        generateReport();
       });
 
-      loadRuntimeConfig();
-      loadTemplates();
+      async function boot() {
+        loadRuntimeConfig();
+        loadDiagnostics();
+        await loadTemplates();
+        const restoredDraft = restoreDraft();
+        state.isBooting = false;
+        await loadHistory({ activateLatest: !restoredDraft });
+        refreshFieldStatuses();
+        updateGenerateCta();
+      }
+
+      boot();
     </script>
   </body>
 </html>

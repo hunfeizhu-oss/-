@@ -6,9 +6,11 @@
 
 1. macOS 双击 `start.command`；Windows 首次使用建议双击 `install-windows.bat`，已安装 Python 的电脑可直接双击 `start.bat`。
 2. 浏览器会自动打开本地页面，默认地址为 `http://127.0.0.1:8765`。如果端口已占用，工具会自动顺延。
-3. 选择模板，上传人物照片并填写缺少的战报信息，点击“生成战报图片”。
-4. 在右侧预览并下载 PNG 或 PPTX。
-5. 终端窗口中按 `Ctrl+C` 可停止工具。
+3. 选择模板，上传人物照片并填写缺少的战报信息。上传图片后可点击“编辑裁切”，按模板图位比例调整缩放和位置。
+4. 默认采用手动生成：修改文案、样式或图片后会先标记待生成，点击“生成战报图片”后再重新导出；需要连续试稿时可勾选“自动更新”。
+5. 在右侧预览并下载 PNG 或 PPTX。生成后可在预览图上点击文案热区直接修改；每次生成会保留在“生成历史”中，可搜索、切换查看、下载或删除旧版本，刷新页面后也会恢复最近记录。
+6. 未生成的文案、样式和所选模板会自动保存为本机草稿；上传图片体积较大，不会写入草稿，刷新后需要重新选择。
+7. 终端窗口中按 `Ctrl+C` 可停止工具。
 
 ## 给其他人使用
 
@@ -30,14 +32,21 @@
 
 生成后的海报底部会自动加入固定文案：`星芽铁军 战无不胜 攻无不克`。
 
-## Windows 启动排查
+## Windows 安装与启动
 
-1. 将整个工具目录完整解压后再运行，不要直接在压缩包预览窗口中双击。
-2. 正常启动请双击 `start.bat`；局域网共享请双击 `start-share.bat`。
-3. 如果无法启动，双击 `windows-diagnose.bat`。诊断窗口会检查 Python、模板和 PowerShell。
-4. 启动器会在工具目录生成 `windows-start.log`。如果仍然失败，请提供窗口中的报错和该日志文件。
+Windows 用户可以直接使用本工具：
 
-Windows 需要 Python 3.9 或更高版本。首次使用可以双击 `install-windows.bat`：它会先检测 Python，缺失时尝试通过 Windows 自带的 `winget` 安装 Python 3.12；如果公司电脑禁用了安装或没有 winget，会自动打开 Python 官方下载页，并提示手动安装时勾选 `Add Python to PATH`。新版启动器会自动尝试 `py -3`、`python`、`python3` 以及常见 Python 安装目录；失败时窗口会停留显示原因，不会直接闪退。
+1. 将整个工具目录完整解压到本地文件夹，不要在压缩包预览窗口里直接双击。
+2. 首次使用双击 `install-windows.bat`。脚本会检测 Python 3.9+；如果电脑没有 Python，会尝试通过 Windows 自带的 `winget` 安装 Python 3.12。
+3. 已安装 Python 的电脑可直接双击 `start.bat`。浏览器会自动打开本机地址。
+4. 需要给同一 Wi-Fi 或公司内网其他同事使用时，双击 `start-share.bat`，把窗口里显示的 `http://192.168.x.x:端口` 地址发给同事。
+5. 如果无法启动，双击 `windows-diagnose.bat`。诊断窗口会检查 Python、模板、PowerShell，并生成 `windows-start.log`。
+
+Windows 上生成 PPTX 只需要 Python；自动导出 PNG 需要安装桌面版 Microsoft PowerPoint。没有 PowerPoint 时，工具仍会生成 PPTX，并在页面提示手动导出图片。
+
+如果公司电脑禁用了 `winget` 或安装权限，`install-windows.bat` 会打开 Python 官方下载页。手动安装 Python 时请勾选 `Add Python to PATH`，安装完成后重新双击 `start.bat`。启动器会自动尝试 `py -3`、`python`、`python3` 以及常见 Python 安装目录；失败时窗口会停留显示原因，不会直接闪退。
+
+更详细的 Windows 步骤见 `WINDOWS.md`。
 
 ## 添加模板
 
@@ -45,4 +54,4 @@ Windows 需要 Python 3.9 或更高版本。首次使用可以双击 `install-wi
 
 ## 文件位置
 
-每次生成的文件也会保存在 `generated/` 目录。图片导出失败时，PPTX 仍会保留，可使用 Keynote 或 PowerPoint 手动导出。
+每次生成的文件也会保存在 `generated/` 目录，并附带一份 `metadata.json` 用于恢复生成历史。图片导出失败时，PPTX 仍会保留，可使用 Keynote 或 PowerPoint 手动导出。

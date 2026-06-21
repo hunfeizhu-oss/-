@@ -36,6 +36,7 @@ GENERATED_DIR = ROOT / "generated"
 KEYNOTE_EXPORT_SCRIPT = ROOT / "scripts" / "export_keynote.applescript"
 POWERPOINT_EXPORT_SCRIPT = ROOT / "scripts" / "export_powerpoint.ps1"
 WINDOWS_IMAGE_SCRIPT = ROOT / "scripts" / "convert_image_windows.ps1"
+METADATA_FILENAME = "metadata.json"
 
 P_NS = "http://schemas.openxmlformats.org/presentationml/2006/main"
 A_NS = "http://schemas.openxmlformats.org/drawingml/2006/main"
@@ -44,6 +45,25 @@ RELATIONSHIPS_NS = "http://schemas.openxmlformats.org/package/2006/relationships
 NS = {"p": P_NS, "a": A_NS, "r": R_NS}
 GENERATE_LOCK = threading.Lock()
 FIXED_FOOTER_TEXT = "星芽铁军 战无不胜 攻无不克"
+
+FONT_ALIASES_BY_SYSTEM = {
+    "Darwin": {
+        "微软雅黑": "PingFang SC",
+        "黑体": "STHeiti",
+        "宋体": "Songti SC",
+        "楷体": "Kaiti SC",
+        "苹方": "PingFang SC",
+        "冬青黑体": "Hiragino Sans",
+    },
+    "Windows": {
+        "微软雅黑": "Microsoft YaHei",
+        "黑体": "SimHei",
+        "宋体": "SimSun",
+        "楷体": "KaiTi",
+        "苹方": "Microsoft YaHei",
+        "冬青黑体": "Microsoft YaHei",
+    },
+}
 
 
 @dataclass(frozen=True)
@@ -146,17 +166,22 @@ BUILTIN_FIELDS: dict[str, list[dict[str, Any]]] = {
         {"key": "product", "label": "签约产品", "shape_id": "63"},
         {"key": "amount", "label": "新签收款", "shape_id": "65", "kind": "number"},
         {"key": "headline", "label": "顶部标语", "shape_id": "37"},
-        {"key": "footer", "label": "底部口号", "shape_id": "35"},
+        {"key": "footer", "label": "底部口号", "shape_id": "35", "fixed": True},
     ],
     "Q1战报模版-竖版accio.pptx": [
-        {"key": "name", "label": "姓名 / 战报名称", "shape_id": "41"},
-        {"key": "company", "label": "公司名称", "shape_id": "42"},
-        {"key": "team", "label": "SAAS / 团队", "shape_id": "46"},
-        {"key": "manager", "label": "KP / 主管", "shape_id": "62"},
-        {"key": "product", "label": "签约产品", "shape_id": "63"},
-        {"key": "amount", "label": "新签收款", "shape_id": "65", "kind": "number"},
-        {"key": "headline", "label": "顶部标语", "shape_id": "37"},
-        {"key": "footer", "label": "底部口号", "shape_id": "35"},
+        {"key": "product", "label": "签约产品 / 版本", "shape_id": "10"},
+        {"key": "amount", "label": "新签收款", "shape_id": "18", "kind": "number"},
+        {
+            "key": "experience",
+            "label": "经验分享",
+            "shape_id": "23",
+            "kind": "textarea",
+        },
+        {"key": "name", "label": "姓名 / 战报名称", "shape_id": "29"},
+        {"key": "company", "label": "公司名称", "shape_id": "3"},
+        {"key": "team", "label": "团队", "shape_id": "4"},
+        {"key": "manager", "label": "主管", "shape_id": "7"},
+        {"key": "footer", "label": "底部口号", "shape_id": "8", "fixed": True},
     ],
     "Q1战报模版-竖版okki.pptx": [
         {"key": "name", "label": "姓名 / 战报名称", "shape_id": "18"},
@@ -167,7 +192,7 @@ BUILTIN_FIELDS: dict[str, list[dict[str, Any]]] = {
         {"key": "product", "label": "签约产品", "shape_id": "2"},
         {"key": "amount", "label": "新签收款", "shape_id": "31", "kind": "number"},
         {"key": "headline", "label": "顶部标语", "shape_id": "36"},
-        {"key": "footer", "label": "底部口号", "shape_id": "35"},
+        {"key": "footer", "label": "底部口号", "shape_id": "35", "fixed": True},
     ],
     "Q1战报模版-竖版okki5年.pptx": [
         {"key": "name", "label": "姓名 / 战报名称", "shape_id": "41"},
@@ -177,7 +202,7 @@ BUILTIN_FIELDS: dict[str, list[dict[str, Any]]] = {
         {"key": "product", "label": "签约产品", "shape_id": "63"},
         {"key": "amount", "label": "新签收款", "shape_id": "65", "kind": "number"},
         {"key": "headline", "label": "顶部标语", "shape_id": "37"},
-        {"key": "footer", "label": "底部口号", "shape_id": "35"},
+        {"key": "footer", "label": "底部口号", "shape_id": "35", "fixed": True},
     ],
 }
 
@@ -186,8 +211,8 @@ PERSON_IMAGE_BY_TEMPLATE = {
     "Q1战报模版-横版.pptx": "ppt/media/image4.png",
     "Q1战报模版-竖版accio-okki.pptx": "ppt/media/image2.png",
     "Q1战报模版-竖版accio.pptx": "ppt/media/image2.png",
-    "Q1战报模版-竖版okki.pptx": "ppt/media/image5.png",
-    "Q1战报模版-竖版okki5年.pptx": "ppt/media/image2.png",
+    "Q1战报模版-竖版okki.pptx": "ppt/media/image6.png",
+    "Q1战报模版-竖版okki5年.pptx": "ppt/media/image8.png",
     "4星保效方案.pptx": "ppt/media/image2.png",
     "5星保效方案.pptx": "ppt/media/image2.png",
     "A200方案.pptx": "ppt/media/image2.png",
@@ -197,20 +222,57 @@ HORIZONTAL_GALLERY_SHAPES = ("15", "16", "17", "19", "22")
 A200_SECOND_PERSON_PICTURE_ID = "10"
 
 
-def upload_slots_for_template(template_name: str) -> list[dict[str, str]]:
+def _slot_aspect(template_path: Path | None, template_name: str, slot_key: str) -> dict[str, Any]:
+    if template_path is None:
+        return {"aspectRatio": 1, "targetWidth": 1000, "targetHeight": 1000}
+    try:
+        if slot_key.startswith("gallery"):
+            index = int(slot_key.replace("gallery", ""))
+            shape_id = HORIZONTAL_GALLERY_SHAPES[index - 1]
+            width, height = _upload_pixel_size(_shape_box(template_path, shape_id))
+        else:
+            media_path = PERSON_IMAGE_BY_TEMPLATE.get(template_name)
+            if not media_path:
+                return {"aspectRatio": 1, "targetWidth": 1000, "targetHeight": 1000}
+            width, height = _person_image_size(template_path, media_path)
+        return {
+            "aspectRatio": width / height if height else 1,
+            "targetWidth": width,
+            "targetHeight": height,
+        }
+    except Exception:
+        return {"aspectRatio": 1, "targetWidth": 1000, "targetHeight": 1000}
+
+
+def _upload_slot(
+    key: str, label: str, hint: str, template_name: str, template_path: Path | None
+) -> dict[str, Any]:
+    return {
+        "key": key,
+        "label": label,
+        "hint": hint,
+        **_slot_aspect(template_path, template_name, key),
+    }
+
+
+def upload_slots_for_template(
+    template_name: str, template_path: Path | None = None
+) -> list[dict[str, Any]]:
     if template_name == "A200方案.pptx":
         return [
-            {"key": "person", "label": "左侧人物照片", "hint": "上传左侧人物照片"},
-            {"key": "person2", "label": "右侧人物照片", "hint": "上传右侧人物照片"},
+            _upload_slot("person", "左侧人物照片", "上传左侧人物照片", template_name, template_path),
+            _upload_slot("person2", "右侧人物照片", "上传右侧人物照片", template_name, template_path),
         ]
-    slots = [{"key": "person", "label": "人物照片", "hint": "上传人物照片"}]
+    slots = [_upload_slot("person", "人物照片", "上传人物照片", template_name, template_path)]
     if template_name == "Q1战报模版-横版.pptx":
         slots.extend(
-            {
-                "key": f"gallery{index}",
-                "label": f"战报图片 {index}",
-                "hint": f"上传白框图片 {index}",
-            }
+            _upload_slot(
+                f"gallery{index}",
+                f"战报图片 {index}",
+                f"上传白框图片 {index}",
+                template_name,
+                template_path,
+            )
             for index in range(1, 6)
         )
     return slots
@@ -357,6 +419,8 @@ def fields_for_template(template_path: Path) -> list[Field]:
             if not texts or (run_index is not None and run_index >= len(texts)):
                 continue
             configured_shape_ids.add(shape_id)
+            if item.get("fixed"):
+                continue
             result.append(
                 Field(
                     key=item["key"],
@@ -377,6 +441,20 @@ def _template_error(path: Path, message: str) -> dict[str, str]:
     return {"id": path.name, "error": message}
 
 
+def _is_template_candidate(path: Path) -> bool:
+    name = path.name
+    if path.suffix.lower() != ".pptx":
+        return False
+    return not (name.startswith(".") or name.startswith("~$") or name.startswith(".~"))
+
+
+def _template_paths() -> list[Path]:
+    return sorted(
+        [path for path in ROOT.glob("*.pptx") if _is_template_candidate(path)],
+        key=lambda item: item.name,
+    )
+
+
 def _template_item(path: Path) -> dict[str, Any]:
     _, (width, height) = _shape_map(path)
     orientation = "横版" if width > height else "竖版"
@@ -387,7 +465,7 @@ def _template_item(path: Path) -> dict[str, Any]:
         "orientation": orientation,
         "fieldCount": len(fields),
         "fields": [field.as_dict() for field in fields],
-        "uploadSlots": upload_slots_for_template(path.name),
+        "uploadSlots": upload_slots_for_template(path.name, path),
         "builtin": path.name in BUILTIN_FIELDS,
     }
 
@@ -395,7 +473,7 @@ def _template_item(path: Path) -> dict[str, Any]:
 def templates_with_errors() -> tuple[list[dict[str, Any]], list[dict[str, str]]]:
     items: list[dict[str, Any]] = []
     errors: list[dict[str, str]] = []
-    for path in sorted(ROOT.glob("*.pptx"), key=lambda item: item.name):
+    for path in _template_paths():
         try:
             items.append(_template_item(path))
         except zipfile.BadZipFile:
@@ -410,7 +488,7 @@ def templates() -> list[dict[str, Any]]:
 
 
 def templates_payload() -> dict[str, Any]:
-    paths = sorted(ROOT.glob("*.pptx"), key=lambda item: item.name)
+    paths = _template_paths()
     digest = hashlib.sha256()
     latest_modified = 0.0
     for path in paths:
@@ -610,7 +688,10 @@ def _clean_text_color(value: Any) -> str:
 
 def _clean_font_family(value: Any) -> str:
     font = re.sub(r"[\x00-\x1f<>]", "", str(value or "").strip())
-    return font[:48]
+    if not font:
+        return ""
+    aliases = FONT_ALIASES_BY_SYSTEM.get(platform.system(), {})
+    return aliases.get(font, font)[:64]
 
 
 def _clean_font_size(value: Any) -> int | None:
@@ -828,6 +909,71 @@ def _picture_transform(shape: ET.Element) -> tuple[int, int, int, int] | None:
     )
 
 
+def _group_transform(group: ET.Element) -> tuple[int, int, int, int, int, int, int, int] | None:
+    transform = group.find("./p:grpSpPr/a:xfrm", NS)
+    if transform is None:
+        return None
+    offset = transform.find("a:off", NS)
+    extent = transform.find("a:ext", NS)
+    child_offset = transform.find("a:chOff", NS)
+    child_extent = transform.find("a:chExt", NS)
+    if offset is None or extent is None or child_offset is None or child_extent is None:
+        return None
+    return (
+        int(offset.get("x", "0")),
+        int(offset.get("y", "0")),
+        int(extent.get("cx", "0")),
+        int(extent.get("cy", "0")),
+        int(child_offset.get("x", "0")),
+        int(child_offset.get("y", "0")),
+        int(child_extent.get("cx", "0")),
+        int(child_extent.get("cy", "0")),
+    )
+
+
+def _apply_group_transform(
+    box: tuple[int, int, int, int],
+    group: tuple[int, int, int, int, int, int, int, int],
+) -> tuple[int, int, int, int]:
+    x, y, width, height = box
+    group_x, group_y, group_width, group_height, child_x, child_y, child_width, child_height = group
+    scale_x = group_width / child_width if child_width else 1
+    scale_y = group_height / child_height if child_height else 1
+    return (
+        round(group_x + (x - child_x) * scale_x),
+        round(group_y + (y - child_y) * scale_y),
+        round(width * scale_x),
+        round(height * scale_y),
+    )
+
+
+def _shape_absolute_box_by_id(root: ET.Element, shape_id: str) -> tuple[int, int, int, int] | None:
+    def walk(
+        node: ET.Element,
+        groups: list[tuple[int, int, int, int, int, int, int, int]],
+    ) -> tuple[int, int, int, int] | None:
+        for child in list(node):
+            if child.tag == _p_tag("sp") and _shape_id(child) == shape_id:
+                box = _picture_transform(child)
+                if box is None:
+                    return None
+                for group in reversed(groups):
+                    box = _apply_group_transform(box, group)
+                return box
+            if child.tag == _p_tag("grpSp"):
+                group = _group_transform(child)
+                result = walk(child, groups + ([group] if group else []))
+                if result is not None:
+                    return result
+            elif child.tag != _p_tag("sp"):
+                result = walk(child, groups)
+                if result is not None:
+                    return result
+        return None
+
+    return walk(root, [])
+
+
 def _append_picture(
     root: ET.Element,
     relationships: ET.Element,
@@ -890,6 +1036,24 @@ def _append_gallery_images(
             _append_picture(root, relationships, media_path, box, f"上传战报图片 {shape_id}")
 
 
+def _slide_contains_footer_slogan(root: ET.Element) -> bool:
+    text = "".join(node.text or "" for node in root.findall(".//a:t", NS))
+    return "星芽铁军" in text and ("战无不胜" in text or "攻无不克" in text)
+
+
+def _fixed_footer_shape_id(template_name: str) -> str:
+    for item in BUILTIN_FIELDS.get(template_name, []):
+        if item.get("key") == "footer" and item.get("fixed"):
+            return str(item["shape_id"])
+    return ""
+
+
+def _apply_fixed_footer_slogan(root: ET.Element, template_name: str) -> None:
+    shape_id = _fixed_footer_shape_id(template_name)
+    if shape_id:
+        _replace_shape_text(root, shape_id, None, FIXED_FOOTER_TEXT)
+
+
 def _append_footer_slogan(
     root: ET.Element, slide_width: int, slide_height: int
 ) -> None:
@@ -897,9 +1061,9 @@ def _append_footer_slogan(
     if shape_tree is None or not slide_width or not slide_height:
         return
     if slide_width > slide_height:
-        x, y, width, height, font_size = 500000, 6260000, 11192000, 500000, 1800
+        x, y, width, height, font_size = 500000, 6080000, 11192000, 760000, 2400
     else:
-        x, y, width, height, font_size = 650000, 36350000, 14474670, 1250000, 3200
+        x, y, width, height, font_size = 650000, 35780000, 14474670, 1500000, 3900
 
     shape = ET.SubElement(shape_tree, _p_tag("sp"))
     non_visual = ET.SubElement(shape, _p_tag("nvSpPr"))
@@ -1009,7 +1173,9 @@ def render_pptx(
             for picture_id, media_path in relink_images:
                 _relink_picture(root, relationships, picture_id, media_path)
             _append_gallery_images(root, relationships, gallery_media)
-            _append_footer_slogan(root, slide_width, slide_height)
+            _apply_fixed_footer_slogan(root, template_path.name)
+            if not _slide_contains_footer_slogan(root):
+                _append_footer_slogan(root, slide_width, slide_height)
             _apply_custom_text_styles(root, fields, text_styles)
             slide_xml = ET.tostring(root, encoding="utf-8", xml_declaration=True)
             ET.register_namespace("", RELATIONSHIPS_NS)
@@ -1042,6 +1208,13 @@ def _export_png_with_keynote(
     if not Path("/Applications/Keynote.app").exists():
         return None, "本机未安装 Keynote，已生成 PPTX；请手动导出图片。"
     render_dir.mkdir(parents=True, exist_ok=True)
+    subprocess.run(
+        ["/usr/bin/open", "-gj", "-a", "Keynote"],
+        check=False,
+        capture_output=True,
+        text=True,
+        timeout=10,
+    )
     try:
         completed = subprocess.run(
             [
@@ -1163,6 +1336,155 @@ def export_png(pptx_path: Path, render_dir: Path) -> tuple[Path | None, str]:
     return None, "当前系统暂不支持自动转图，PPTX 已生成；请手动导出图片。"
 
 
+def diagnostics_payload() -> dict[str, Any]:
+    system = platform.system()
+    template_count = len(_template_paths())
+    checks: list[dict[str, Any]] = []
+    warnings: list[str] = []
+    actions: list[str] = []
+
+    pptx_available = template_count > 0
+    checks.append(
+        {
+            "key": "pptx",
+            "label": "PPTX 生成",
+            "ok": pptx_available,
+            "level": "ok" if pptx_available else "error",
+            "detail": f"已识别 {template_count} 份模板" if pptx_available else "未找到可用 PPTX 模板",
+        }
+    )
+
+    png_available = False
+    png_method = ""
+    png_level = "error"
+    png_label = "PNG 自动导出不可用"
+    png_detail = "当前系统暂不支持自动转图。"
+
+    if system == "Darwin":
+        keynote_installed = Path("/Applications/Keynote.app").exists()
+        keynote_script = KEYNOTE_EXPORT_SCRIPT.exists()
+        quicklook_available = Path("/usr/bin/qlmanage").exists()
+        checks.extend(
+            [
+                {
+                    "key": "keynote",
+                    "label": "Keynote",
+                    "ok": keynote_installed,
+                    "level": "ok" if keynote_installed else "warn",
+                    "detail": "已安装" if keynote_installed else "未安装",
+                },
+                {
+                    "key": "keynoteScript",
+                    "label": "Keynote 导出脚本",
+                    "ok": keynote_script,
+                    "level": "ok" if keynote_script else "error",
+                    "detail": "正常" if keynote_script else "缺失 scripts/export_keynote.applescript",
+                },
+                {
+                    "key": "quicklook",
+                    "label": "系统快速预览",
+                    "ok": quicklook_available,
+                    "level": "ok" if quicklook_available else "error",
+                    "detail": "可作为 PNG 兜底导出" if quicklook_available else "未找到 qlmanage",
+                },
+            ]
+        )
+        if keynote_installed and keynote_script:
+            png_available = True
+            png_method = "Keynote"
+            png_level = "ok"
+            png_label = "PNG 自动导出可用"
+            png_detail = "优先使用 Keynote 导出；若 Keynote 临时失败，会尝试系统快速预览兜底。"
+            if quicklook_available:
+                warnings.append("Keynote 需要 macOS 允许自动化控制；首次运行可能需要确认权限。")
+        elif quicklook_available:
+            png_available = True
+            png_method = "Quick Look"
+            png_level = "warn"
+            png_label = "PNG 兜底导出可用"
+            png_detail = "未满足 Keynote 自动导出条件，将使用系统快速预览生成 PNG。"
+            warnings.append("Quick Look 兜底图可能和 Keynote/PowerPoint 渲染有细微差异。")
+            if not keynote_installed:
+                actions.append("如需更稳定的版式导出，建议安装 Keynote。")
+            if not keynote_script:
+                actions.append("检查 scripts/export_keynote.applescript 是否存在。")
+        else:
+            actions.append("安装 Keynote，或确认 /usr/bin/qlmanage 可用后再生成图片。")
+    elif system == "Windows":
+        powershell = _powershell_executable()
+        script_ok = POWERPOINT_EXPORT_SCRIPT.exists()
+        checks.extend(
+            [
+                {
+                    "key": "powershell",
+                    "label": "PowerShell",
+                    "ok": bool(powershell),
+                    "level": "ok" if powershell else "error",
+                    "detail": powershell or "未找到",
+                },
+                {
+                    "key": "powerpointScript",
+                    "label": "PowerPoint 导出脚本",
+                    "ok": script_ok,
+                    "level": "ok" if script_ok else "error",
+                    "detail": "正常" if script_ok else "缺失 scripts/export_powerpoint.ps1",
+                },
+            ]
+        )
+        if powershell and script_ok:
+            png_available = True
+            png_method = "PowerPoint"
+            png_level = "warn"
+            png_label = "PNG 自动导出待确认"
+            png_detail = "PowerShell 和导出脚本可用；首次生成时会调用桌面版 PowerPoint。"
+            warnings.append("请确保已安装桌面版 PowerPoint，并允许脚本自动化导出。")
+        else:
+            actions.append("安装桌面版 PowerPoint，并确认 PowerShell 与导出脚本可用。")
+    else:
+        checks.append(
+            {
+                "key": "system",
+                "label": "系统支持",
+                "ok": False,
+                "level": "error",
+                "detail": f"{system or '未知系统'} 暂不支持自动 PNG 导出",
+            }
+        )
+        actions.append("可先下载 PPTX，再手动导出 PNG。")
+
+    if not pptx_available:
+        actions.append("将 PPTX 模板放到工具目录后点击“更新最新模板”。")
+
+    return {
+        "refreshedAt": datetime.now().isoformat(timespec="seconds"),
+        "system": {
+            "name": system,
+            "release": platform.release(),
+            "python": sys.version.split()[0],
+        },
+        "templates": {
+            "count": template_count,
+            "available": pptx_available,
+        },
+        "pptx": {
+            "available": pptx_available,
+            "level": "ok" if pptx_available else "error",
+            "label": "PPTX 可生成" if pptx_available else "PPTX 暂不可生成",
+            "detail": f"{template_count} 份模板可用" if pptx_available else "未找到可用模板",
+        },
+        "png": {
+            "available": png_available,
+            "method": png_method,
+            "level": png_level,
+            "label": png_label,
+            "detail": png_detail,
+        },
+        "checks": checks,
+        "warnings": warnings,
+        "actions": actions,
+    }
+
+
 def _png_dimensions(image_bytes: bytes) -> tuple[int, int]:
     if len(image_bytes) < 24 or image_bytes[:8] != b"\x89PNG\r\n\x1a\n":
         raise ValueError("模板人物图片不是有效的 PNG 文件")
@@ -1181,8 +1503,7 @@ def _shape_box(template_path: Path, shape_id: str) -> tuple[int, int, int, int]:
     with zipfile.ZipFile(template_path) as archive:
         slides = _slide_names(archive)
         root = ET.fromstring(archive.read(slides[0]))
-    shape = _shape_by_id(root, shape_id)
-    box = _picture_transform(shape) if shape is not None else None
+    box = _shape_absolute_box_by_id(root, shape_id)
     if box is None:
         raise ValueError(f"模板图片框 {shape_id} 不存在")
     return box
@@ -1193,6 +1514,43 @@ def _upload_pixel_size(box: tuple[int, int, int, int]) -> tuple[int, int]:
     if width >= height:
         return 1000, max(1, round(1000 * height / width))
     return max(1, round(1000 * width / height)), 1000
+
+
+def _editor_fields_for_template(
+    template_path: Path, values: dict[str, str]
+) -> list[dict[str, Any]]:
+    fields = fields_for_template(template_path)
+    with zipfile.ZipFile(template_path) as archive:
+        slide_width, slide_height = _slide_size(archive)
+        slides = _slide_names(archive)
+        if not slides or not slide_width or not slide_height:
+            return []
+        root = ET.fromstring(archive.read(slides[0]))
+
+    editor_fields: list[dict[str, Any]] = []
+    seen: set[tuple[str, int | None]] = set()
+    for field in fields:
+        box = _shape_absolute_box_by_id(root, field.shape_id)
+        if box is None:
+            continue
+        identity = (field.shape_id, field.run_index)
+        if identity in seen:
+            continue
+        seen.add(identity)
+        x, y, width, height = box
+        editor_fields.append(
+            {
+                "key": field.key,
+                "label": field.label,
+                "value": str(values.get(field.key, field.default)),
+                "x": x / slide_width,
+                "y": y / slide_height,
+                "width": width / slide_width,
+                "height": height / slide_height,
+                "kind": field.kind,
+            }
+        )
+    return editor_fields
 
 
 def _sips_image_size(source_path: Path) -> tuple[int, int]:
@@ -1397,9 +1755,10 @@ def generate(payload: dict[str, Any]) -> dict[str, Any]:
                 f"战报图片-{index}",
             )
             gallery_media.append((shape_id, media_path))
+    clean_values = {str(k): str(v) for k, v in values.items()}
     render_pptx(
         template_path,
-        {str(k): str(v) for k, v in values.items()},
+        clean_values,
         pptx_path,
         media_replacements,
         gallery_media,
@@ -1407,6 +1766,19 @@ def generate(payload: dict[str, Any]) -> dict[str, Any]:
         text_styles,
     )
     image_path, warning = export_png(pptx_path, output_dir / "slide-render")
+    editor_fields = _editor_fields_for_template(template_path, clean_values)
+    record = _history_record(
+        output_dir,
+        template_path,
+        clean_values,
+        text_styles,
+        pptx_path,
+        image_path,
+        warning,
+        uploads,
+        editor_fields,
+    )
+    _write_history_metadata(output_dir, record)
     response: dict[str, Any] = {
         "message": "战报已生成",
         "pptxUrl": _public_url(pptx_path),
@@ -1415,6 +1787,8 @@ def generate(payload: dict[str, Any]) -> dict[str, Any]:
         "outputDir": str(output_dir),
         "photoReplaced": bool(uploads),
         "uploadCount": len(uploads),
+        "editorFields": editor_fields,
+        "historyRecord": record,
     }
     return response
 
@@ -1424,6 +1798,147 @@ def _public_url(path: Path | None) -> str:
         return ""
     relative = path.resolve().relative_to(ROOT)
     return "/" + urllib.parse.quote(relative.as_posix())
+
+
+def _history_summary(values: dict[str, str]) -> str:
+    preferred = ("name", "company", "amount", "headline", "product")
+    picked = [
+        str(values.get(key, "")).strip()
+        for key in preferred
+        if str(values.get(key, "")).strip()
+    ][:2]
+    if picked:
+        return " · ".join(picked)
+    for value in values.values():
+        clean_value = str(value).strip()
+        if clean_value:
+            return clean_value[:42]
+    return "未填写文案"
+
+
+def _history_record(
+    output_dir: Path,
+    template_path: Path,
+    values: dict[str, str],
+    text_styles: dict[str, Any],
+    pptx_path: Path,
+    image_path: Path | None,
+    warning: str,
+    uploads: dict[str, str],
+    editor_fields: list[dict[str, Any]],
+    created_at: datetime | None = None,
+) -> dict[str, Any]:
+    created_at = created_at or datetime.now()
+    return {
+        "id": output_dir.name,
+        "templateId": template_path.name,
+        "templateName": template_path.stem,
+        "imageUrl": _public_url(image_path) if image_path else "",
+        "pptxUrl": _public_url(pptx_path),
+        "warning": warning,
+        "outputDir": str(output_dir),
+        "photoReplaced": bool(uploads),
+        "uploadCount": len(uploads),
+        "editorFields": editor_fields,
+        "values": values,
+        "textStyles": text_styles,
+        "summary": _history_summary(values),
+        "createdAt": created_at.isoformat(timespec="seconds"),
+    }
+
+
+def _write_history_metadata(output_dir: Path, record: dict[str, Any]) -> None:
+    metadata_path = output_dir / METADATA_FILENAME
+    metadata_path.write_text(
+        json.dumps(record, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
+
+
+def _history_record_from_metadata(output_dir: Path) -> dict[str, Any] | None:
+    metadata_path = output_dir / METADATA_FILENAME
+    if not metadata_path.exists():
+        return None
+    try:
+        data = json.loads(metadata_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    if not isinstance(data, dict):
+        return None
+    pptx_url = str(data.get("pptxUrl", ""))
+    image_url = str(data.get("imageUrl", ""))
+    if not pptx_url and not image_url:
+        return None
+    data["id"] = str(data.get("id") or output_dir.name)
+    values = data.get("values", {})
+    value_map = values if isinstance(values, dict) else {}
+    data["summary"] = str(data.get("summary") or _history_summary(value_map))
+    template_path = ROOT / str(data.get("templateId", ""))
+    if template_path.exists():
+        try:
+            clean_values = {str(key): str(value) for key, value in value_map.items()}
+            data["editorFields"] = _editor_fields_for_template(template_path, clean_values)
+        except Exception:
+            pass
+    return data
+
+
+def _history_record_from_output_dir(output_dir: Path) -> dict[str, Any] | None:
+    pptx_files = sorted(output_dir.glob("*.pptx"))
+    image_files = sorted(output_dir.glob("*.png"))
+    if not pptx_files and not image_files:
+        return None
+    pptx_path = pptx_files[0] if pptx_files else None
+    image_path = image_files[0] if image_files else None
+    template_name = output_dir.name
+    match = re.match(r"\d{8}-\d{6}-(.+)$", output_dir.name)
+    if match:
+        template_name = match.group(1)
+    created_at = datetime.fromtimestamp(output_dir.stat().st_mtime)
+    return {
+        "id": output_dir.name,
+        "templateId": f"{template_name}.pptx",
+        "templateName": template_name,
+        "imageUrl": _public_url(image_path) if image_path else "",
+        "pptxUrl": _public_url(pptx_path) if pptx_path else "",
+        "warning": "",
+        "outputDir": str(output_dir),
+        "photoReplaced": False,
+        "uploadCount": 0,
+        "editorFields": [],
+        "values": {},
+        "textStyles": {},
+        "summary": template_name,
+        "createdAt": created_at.isoformat(timespec="seconds"),
+    }
+
+
+def history_payload(limit: int = 20) -> dict[str, Any]:
+    if not GENERATED_DIR.exists():
+        return {"items": []}
+    items: list[dict[str, Any]] = []
+    output_dirs = sorted(
+        (path for path in GENERATED_DIR.iterdir() if path.is_dir()),
+        key=lambda item: item.stat().st_mtime,
+        reverse=True,
+    )
+    for output_dir in output_dirs[: max(1, min(limit, 80))]:
+        record = _history_record_from_metadata(output_dir) or _history_record_from_output_dir(output_dir)
+        if record:
+            items.append(record)
+    return {"items": items}
+
+
+def delete_history_record(record_id: str) -> dict[str, Any]:
+    record_id = urllib.parse.unquote(str(record_id or "")).strip()
+    if not record_id:
+        raise ValueError("缺少历史记录 ID")
+    candidate = (GENERATED_DIR / record_id).resolve()
+    generated_root = GENERATED_DIR.resolve()
+    if generated_root not in candidate.parents or not candidate.is_dir():
+        raise ValueError("找不到要删除的历史记录")
+    shutil.rmtree(candidate)
+    return {"deleted": record_id, **history_payload(20)}
 
 
 class AppHandler(SimpleHTTPRequestHandler):
@@ -1452,6 +1967,17 @@ class AppHandler(SimpleHTTPRequestHandler):
                     HTTPStatus.INTERNAL_SERVER_ERROR,
                 )
             return
+        if parsed.path == "/api/history":
+            try:
+                query = urllib.parse.parse_qs(parsed.query)
+                limit = int(query.get("limit", ["20"])[0])
+                self._send_json(history_payload(limit))
+            except Exception as exc:
+                self._send_json(
+                    {"error": f"历史读取失败：{exc}"},
+                    HTTPStatus.INTERNAL_SERVER_ERROR,
+                )
+            return
         if parsed.path == "/api/config":
             self._send_json(
                 {
@@ -1459,6 +1985,15 @@ class AppHandler(SimpleHTTPRequestHandler):
                     "shareUrls": list(getattr(self.server, "share_urls", [])),
                 }
             )
+            return
+        if parsed.path == "/api/diagnostics":
+            try:
+                self._send_json(diagnostics_payload())
+            except Exception as exc:
+                self._send_json(
+                    {"error": f"环境诊断失败：{exc}"},
+                    HTTPStatus.INTERNAL_SERVER_ERROR,
+                )
             return
         if parsed.path == "/api/health":
             self._send_json({"ok": True})
@@ -1483,6 +2018,20 @@ class AppHandler(SimpleHTTPRequestHandler):
             self._send_json({"error": str(exc)}, HTTPStatus.BAD_REQUEST)
         except Exception as exc:
             self._send_json({"error": f"生成失败：{exc}"}, HTTPStatus.INTERNAL_SERVER_ERROR)
+
+    def do_DELETE(self) -> None:
+        parsed = urllib.parse.urlparse(self.path)
+        prefix = "/api/history/"
+        if not parsed.path.startswith(prefix):
+            self._send_json({"error": "接口不存在"}, HTTPStatus.NOT_FOUND)
+            return
+        try:
+            record_id = parsed.path[len(prefix) :]
+            self._send_json(delete_history_record(record_id))
+        except ValueError as exc:
+            self._send_json({"error": str(exc)}, HTTPStatus.BAD_REQUEST)
+        except Exception as exc:
+            self._send_json({"error": f"历史删除失败：{exc}"}, HTTPStatus.INTERNAL_SERVER_ERROR)
 
     def translate_path(self, path: str) -> str:
         parsed_path = urllib.parse.urlparse(path).path
